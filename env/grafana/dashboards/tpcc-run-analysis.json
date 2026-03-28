@@ -1,0 +1,68 @@
+{
+  "annotations": {"list": []},
+  "editable": true,
+  "graphTooltip": 0,
+  "panels": [
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "fieldConfig": {"defaults": {"unit": "short"}, "overrides": []},
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0},
+      "id": 1,
+      "options": {"legend": {"displayMode": "table", "placement": "bottom"}},
+      "targets": [
+        {"expr": "sum(opengauss_activity_sessions{state=~\"active|fastpath function call\"})", "legendFormat": "active sessions"}
+      ],
+      "title": "Concurrent active sessions",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "fieldConfig": {"defaults": {"unit": "bytes"}, "overrides": []},
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0},
+      "id": 2,
+      "options": {"legend": {"displayMode": "table", "placement": "bottom"}},
+      "targets": [
+        {"expr": "sum(opengauss_temp_bytes_total)", "legendFormat": "temp bytes"},
+        {"expr": "sum(opengauss_temp_files_total)", "legendFormat": "temp files"}
+      ],
+      "title": "Spill and temp IO",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "fieldConfig": {"defaults": {"unit": "bytes"}, "overrides": []},
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 8},
+      "id": 3,
+      "options": {"legend": {"displayMode": "table", "placement": "bottom"}},
+      "targets": [
+        {"expr": "sum(opengauss_shared_context_used_bytes)", "legendFormat": "shared used"},
+        {"expr": "sum(opengauss_session_used_bytes)", "legendFormat": "session used"}
+      ],
+      "title": "Pressure window memory usage",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "fieldConfig": {"defaults": {"unit": "bytes"}, "overrides": []},
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 8},
+      "id": 4,
+      "options": {"legend": {"displayMode": "table", "placement": "bottom"}},
+      "targets": [
+        {"expr": "max(opengauss_session_used_bytes)", "legendFormat": "max session used"},
+        {"expr": "sum(opengauss_setting_bytes{setting=~\"work_mem|temp_buffers\"})", "legendFormat": "selected settings"}
+      ],
+      "title": "Per-session peaks and settings",
+      "type": "timeseries"
+    }
+  ],
+  "refresh": "10s",
+  "schemaVersion": 39,
+  "style": "dark",
+  "tags": ["opengauss", "tpcc"],
+  "templating": {"list": []},
+  "time": {"from": "now-1h", "to": "now"},
+  "timezone": "",
+  "title": "TPCC Run Analysis",
+  "uid": "tpcc-run-analysis",
+  "version": 1
+}

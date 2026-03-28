@@ -1,0 +1,4 @@
+profile_name: local-dev
+cpu_cores: 8
+total_memory_gb: 16
+temp_disk_note: docker-local

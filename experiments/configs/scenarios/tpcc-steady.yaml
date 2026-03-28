@@ -1,0 +1,11 @@
+scenario_name: tpcc-steady
+tp_runner: tpcc
+enable_injection: false
+load_tpch_data: false
+dataset_profile_file: benchmarks/datasets/profiles/small-local.yaml
+hardware_profile_file: experiments/configs/hardware-profiles/local-dev.yaml
+sql_preset: sql/tuning/baseline_params.sql
+duration_seconds: 300
+warmup_seconds: 60
+tpcc_scalefactor: 10
+tpcc_terminals: 32

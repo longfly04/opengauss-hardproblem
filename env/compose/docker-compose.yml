@@ -1,0 +1,131 @@
+services:
+  opengauss:
+    image: ${OPENGAUSS_IMAGE}
+    container_name: ${COMPOSE_PROJECT_NAME}-opengauss
+    restart: unless-stopped
+    environment:
+      GS_PASSWORD: ${GS_PASSWORD}
+      DB_ADMIN_USER: ${DB_ADMIN_USER}
+      DB_NAME: ${DB_NAME}
+      BENCH_USER: ${BENCH_USER}
+      BENCH_PASSWORD: ${BENCH_PASSWORD}
+      EXPORTER_USER: ${EXPORTER_USER}
+      EXPORTER_PASSWORD: ${EXPORTER_PASSWORD}
+    ports:
+      - "${DB_PORT}:5432"
+    volumes:
+      - og_data:/var/lib/opengauss
+      - ../opengauss/init:/opt/opengauss/bootstrap:ro
+      - ../../sql:/opt/opengauss/sql:ro
+      - ../../benchmarks:/workspace/benchmarks
+      - ../../experiments:/workspace/experiments
+    healthcheck:
+      test: ["CMD-SHELL", "export PGPASSWORD=\"$${GS_PASSWORD}\"; gsql -h 127.0.0.1 -U $${DB_ADMIN_USER:-gaussdb} -d postgres -Atqc 'select 1' >/dev/null 2>&1"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+    networks:
+      - oglab
+
+  og-memory-exporter:
+    build:
+      context: ../../tools/exporter
+    image: ${COMPOSE_PROJECT_NAME}/og-memory-exporter:latest
+    container_name: ${COMPOSE_PROJECT_NAME}-og-memory-exporter
+    restart: unless-stopped
+    environment:
+      DB_HOST: opengauss
+      DB_PORT: 5432
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${EXPORTER_USER}
+      DB_PASSWORD: ${EXPORTER_PASSWORD}
+      EXPORTER_PORT: ${OG_MEMORY_EXPORTER_PORT}
+    ports:
+      - "${OG_MEMORY_EXPORTER_PORT}:9188"
+    depends_on:
+      opengauss:
+        condition: service_healthy
+    networks:
+      - oglab
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: ${COMPOSE_PROJECT_NAME}-prometheus
+    restart: unless-stopped
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.retention.time=${PROMETHEUS_RETENTION_TIME}
+      - --web.enable-lifecycle
+    ports:
+      - "${PROMETHEUS_PORT}:9090"
+    volumes:
+      - ../prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ../prometheus/rules:/etc/prometheus/rules:ro
+      - prometheus_data:/prometheus
+    depends_on:
+      - og-memory-exporter
+    networks:
+      - oglab
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: ${COMPOSE_PROJECT_NAME}-grafana
+    restart: unless-stopped
+    ports:
+      - "${GRAFANA_PORT}:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_USERS_DEFAULT_THEME: light
+    volumes:
+      - ../grafana/provisioning/datasources:/etc/grafana/provisioning/datasources:ro
+      - ../grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ../grafana/dashboards:/var/lib/grafana/dashboards:ro
+      - grafana_data:/var/lib/grafana
+    depends_on:
+      - prometheus
+    networks:
+      - oglab
+
+  sysbench:
+    image: ${SYSBENCH_IMAGE}
+    profiles: ["bench"]
+    working_dir: /workspace
+    volumes:
+      - ../../benchmarks:/workspace/benchmarks
+      - ../../experiments:/workspace/experiments
+    networks:
+      - oglab
+
+  tpcc-runner:
+    build:
+      context: ../../benchmarks/tpcc
+    image: ${TPCC_IMAGE}
+    profiles: ["bench"]
+    working_dir: /workspace
+    volumes:
+      - ../../benchmarks:/workspace/benchmarks
+      - ../../experiments:/workspace/experiments
+    networks:
+      - oglab
+
+  tpch-tools:
+    build:
+      context: ../../benchmarks/tpch
+    image: ${TPCH_IMAGE}
+    profiles: ["bench"]
+    working_dir: /workspace
+    volumes:
+      - ../../benchmarks:/workspace/benchmarks
+      - ../../experiments:/workspace/experiments
+    networks:
+      - oglab
+
+networks:
+  oglab:
+    name: ${COMPOSE_PROJECT_NAME}-net
+
+volumes:
+  og_data:
+  prometheus_data:
+  grafana_data:

@@ -1,0 +1,8 @@
+# 64GB 级实验模板
+max_connections = 600
+shared_buffers = 12GB
+work_mem = 32MB
+maintenance_work_mem = 1GB
+temp_buffers = 32MB
+effective_cache_size = 32GB
+log_temp_files = 0

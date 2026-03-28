@@ -1,0 +1,29 @@
+groups:
+  - name: opengauss-memory-alerts
+    rules:
+      - alert: OpenGaussExporterDown
+        expr: up{job="opengauss_memory_exporter"} == 0
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: openGauss memory exporter unavailable
+          description: The custom openGauss memory exporter has not been scraped successfully for 2 minutes.
+
+      - alert: OpenGaussTempBytesGrowingFast
+        expr: rate(opengauss_temp_bytes_total[5m]) > 10485760
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: Temporary IO is growing quickly
+          description: Temporary bytes exceed 10 MB/s over the last 5 minutes.
+
+      - alert: OpenGaussHighSharedMemoryUsage
+        expr: sum(opengauss_shared_context_used_bytes) / sum(opengauss_shared_context_total_bytes) > 0.85
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: Shared memory contexts are heavily used
+          description: More than 85% of tracked shared memory is currently in use.

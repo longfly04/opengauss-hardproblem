@@ -1,0 +1,4 @@
+profile_name: 16u-32gb
+cpu_cores: 16
+total_memory_gb: 32
+temp_disk_note: dedicated-ssd

@@ -1,0 +1,35 @@
+<parameters>
+  <type>tpcc</type>
+  <driver>__JDBC_DRIVER__</driver>
+  <url>__JDBC_URL__</url>
+  <username>__DB_USER__</username>
+  <password>__DB_PASSWORD__</password>
+  <isolation>TRANSACTION_READ_COMMITTED</isolation>
+  <scalefactor>__SCALE_FACTOR__</scalefactor>
+  <terminals>__TERMINALS__</terminals>
+  <works>
+    <work>
+      <time>__DURATION_SECONDS__</time>
+      <rate>unlimited</rate>
+      <weights>45,43,4,4,4</weights>
+      <serial>false</serial>
+    </work>
+  </works>
+  <transactiontypes>
+    <transactiontype>
+      <name>NewOrder</name>
+    </transactiontype>
+    <transactiontype>
+      <name>Payment</name>
+    </transactiontype>
+    <transactiontype>
+      <name>OrderStatus</name>
+    </transactiontype>
+    <transactiontype>
+      <name>Delivery</name>
+    </transactiontype>
+    <transactiontype>
+      <name>StockLevel</name>
+    </transactiontype>
+  </transactiontypes>
+</parameters>

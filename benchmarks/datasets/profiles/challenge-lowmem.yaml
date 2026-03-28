@@ -1,0 +1,5 @@
+profile_name: challenge-lowmem
+sysbench_tables: 16
+sysbench_table_size: 100000
+tpcc_scalefactor: 20
+tpch_scale_factor: 10

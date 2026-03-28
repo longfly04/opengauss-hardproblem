@@ -1,0 +1,11 @@
+groups:
+  - name: experiment-health
+    rules:
+      - alert: ActiveSessionsSurging
+        expr: sum(opengauss_activity_sessions{state=~"active|fastpath function call"}) > 100
+        for: 2m
+        labels:
+          severity: info
+        annotations:
+          summary: Active sessions exceed steady-state threshold
+          description: Useful as an experiment marker during TP + TPCH injection.

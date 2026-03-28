@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Run metadata",
+  "type": "object",
+  "properties": {
+    "scenario_name": {"type": "string"},
+    "scenario_file": {"type": "string"},
+    "started_at": {"type": "string"},
+    "finished_at": {"type": "string"},
+    "run_dir": {"type": "string"}
+  },
+  "required": ["scenario_name", "scenario_file", "started_at", "run_dir"]
+}

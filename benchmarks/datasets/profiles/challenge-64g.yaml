@@ -1,0 +1,5 @@
+profile_name: challenge-64g
+sysbench_tables: 32
+sysbench_table_size: 200000
+tpcc_scalefactor: 40
+tpch_scale_factor: 30

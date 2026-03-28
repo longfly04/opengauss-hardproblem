@@ -1,0 +1,16 @@
+# openGauss experiment template
+# Docker 默认通过 SQL preset 调整参数；本文件主要用于宿主机 / 裸机部署参考。
+
+listen_addresses = '*'
+port = 5432
+max_connections = 512
+shared_buffers = 8GB
+work_mem = 64MB
+maintenance_work_mem = 1GB
+temp_buffers = 32MB
+track_activities = on
+track_counts = on
+log_min_duration_statement = 1000
+log_temp_files = 0
+checkpoint_timeout = 15min
+effective_cache_size = 24GB

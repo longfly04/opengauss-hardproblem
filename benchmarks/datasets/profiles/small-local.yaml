@@ -1,0 +1,5 @@
+profile_name: small-local
+sysbench_tables: 8
+sysbench_table_size: 50000
+tpcc_scalefactor: 5
+tpch_scale_factor: 1

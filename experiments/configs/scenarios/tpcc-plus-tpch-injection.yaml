@@ -1,0 +1,15 @@
+scenario_name: tpcc-plus-tpch-injection
+tp_runner: tpcc
+enable_injection: true
+load_tpch_data: true
+injection_query_dir: benchmarks/tpch/variants/pressure-injection
+injection_delay_seconds: 120
+injection_window_seconds: 60
+injection_repeat: 1
+dataset_profile_file: benchmarks/datasets/profiles/challenge-lowmem.yaml
+hardware_profile_file: experiments/configs/hardware-profiles/16u-32gb.yaml
+sql_preset: sql/tuning/lowmem_params.sql
+duration_seconds: 600
+warmup_seconds: 120
+tpcc_scalefactor: 20
+tpcc_terminals: 64

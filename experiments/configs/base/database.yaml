@@ -1,0 +1,4 @@
+db_name: benchdb
+bench_user: bench
+exporter_user: exporter
+sql_preset: sql/tuning/baseline_params.sql

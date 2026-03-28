@@ -1,0 +1,8 @@
+# 32GB 以内低内存实验模板
+max_connections = 400
+shared_buffers = 6GB
+work_mem = 16MB
+maintenance_work_mem = 512MB
+temp_buffers = 16MB
+effective_cache_size = 16GB
+log_temp_files = 0

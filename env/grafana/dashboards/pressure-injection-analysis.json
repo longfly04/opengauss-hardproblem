@@ -1,0 +1,70 @@
+{
+  "annotations": {"list": []},
+  "editable": true,
+  "graphTooltip": 0,
+  "panels": [
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "fieldConfig": {"defaults": {"unit": "short"}, "overrides": []},
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0},
+      "id": 1,
+      "options": {"legend": {"displayMode": "table", "placement": "bottom"}},
+      "targets": [
+        {"expr": "sum(opengauss_activity_sessions)", "legendFormat": "all sessions"},
+        {"expr": "sum(opengauss_activity_sessions{state=~\"active|fastpath function call\"})", "legendFormat": "active sessions"}
+      ],
+      "title": "Session surge during injection",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "fieldConfig": {"defaults": {"unit": "bytes"}, "overrides": []},
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0},
+      "id": 2,
+      "options": {"legend": {"displayMode": "table", "placement": "bottom"}},
+      "targets": [
+        {"expr": "sum(opengauss_temp_bytes_total)", "legendFormat": "temp bytes"},
+        {"expr": "rate(opengauss_temp_bytes_total[5m])", "legendFormat": "temp byte rate"}
+      ],
+      "title": "Temp IO growth",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "fieldConfig": {"defaults": {"unit": "bytes"}, "overrides": []},
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 8},
+      "id": 3,
+      "options": {"legend": {"displayMode": "table", "placement": "bottom"}},
+      "targets": [
+        {"expr": "sum(opengauss_shared_context_used_bytes)", "legendFormat": "shared used"},
+        {"expr": "sum(opengauss_session_used_bytes)", "legendFormat": "session used"},
+        {"expr": "max(opengauss_session_used_bytes)", "legendFormat": "max session used"}
+      ],
+      "title": "Memory pressure timeline",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "prometheus"},
+      "fieldConfig": {"defaults": {"unit": "bytes"}, "overrides": []},
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 8},
+      "id": 4,
+      "options": {"legend": {"displayMode": "table", "placement": "bottom"}},
+      "targets": [
+        {"expr": "container_memory_working_set_bytes{name=~\".*opengauss.*\"}", "legendFormat": "container rss"},
+        {"expr": "node_memory_MemAvailable_bytes", "legendFormat": "host available"}
+      ],
+      "title": "Host and container memory",
+      "type": "timeseries"
+    }
+  ],
+  "refresh": "10s",
+  "schemaVersion": 39,
+  "style": "dark",
+  "tags": ["opengauss", "pressure"],
+  "templating": {"list": []},
+  "time": {"from": "now-2h", "to": "now"},
+  "timezone": "",
+  "title": "Pressure Injection Analysis",
+  "uid": "pressure-injection-analysis",
+  "version": 1
+}

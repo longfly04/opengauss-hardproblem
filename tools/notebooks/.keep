@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+printf 'notebook placeholder for spill and jitter analysis\n' > /dev/null
