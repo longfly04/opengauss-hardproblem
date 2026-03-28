@@ -1,0 +1,67 @@
+services:
+  opengauss:
+    build:
+      context: ../..
+      dockerfile: env/opengauss/dev/Dockerfile.runtime
+      args:
+        OPENGAUSS_DEV_IMAGE: ${OPENGAUSS_DEV_IMAGE}
+        OPENGAUSS_BUILD_TYPE: ${OPENGAUSS_BUILD_TYPE}
+        OPENGAUSS_INSTALL_PREFIX: ${OPENGAUSS_INSTALL_PREFIX}
+    image: ${OPENGAUSS_SOURCE_IMAGE}
+    cap_add:
+      - SYS_PTRACE
+    security_opt:
+      - seccomp=unconfined
+    ports:
+      - "${OPENGAUSS_DEBUG_PORT}:2345"
+    volumes:
+      - og_data:${OPENGAUSS_DATA_DIR}
+      - opengauss_install_cache:${OPENGAUSS_INSTALL_PREFIX}
+      - ${OPENGAUSS_SOURCE_DIR}:/workspace/openGauss-server
+      - opengauss_build_cache:/workspace/opengauss-build
+      - ../opengauss/init:/opt/opengauss/bootstrap:ro
+      - ../../sql:/opt/opengauss/sql:ro
+      - ../../benchmarks:/workspace/benchmarks
+      - ../../experiments:/workspace/experiments
+
+  opengauss-dev:
+    build:
+      context: ../..
+      dockerfile: env/opengauss/dev/Dockerfile.dev
+      args:
+        OPENGAUSS_BUILD_TYPE: ${OPENGAUSS_BUILD_TYPE}
+        OPENGAUSS_INSTALL_PREFIX: ${OPENGAUSS_INSTALL_PREFIX}
+    image: ${OPENGAUSS_DEV_IMAGE}
+    container_name: ${COMPOSE_PROJECT_NAME}-opengauss-dev
+    working_dir: /workspace/openGauss-server
+    stdin_open: true
+    tty: true
+    cap_add:
+      - SYS_PTRACE
+    security_opt:
+      - seccomp=unconfined
+    environment:
+      OPENGAUSS_BUILD_TYPE: ${OPENGAUSS_BUILD_TYPE}
+      OPENGAUSS_INSTALL_PREFIX: ${OPENGAUSS_INSTALL_PREFIX}
+      OPENGAUSS_DATA_DIR: ${OPENGAUSS_DATA_DIR}
+      OPENGAUSS_LOG_DIR: ${OPENGAUSS_LOG_DIR}
+      OPENGAUSS_NODE_NAME: ${OPENGAUSS_NODE_NAME}
+      GS_PASSWORD: ${GS_PASSWORD}
+      DB_ADMIN_USER: ${DB_ADMIN_USER}
+    ports:
+      - "${OPENGAUSS_DEBUG_PORT}:2345"
+    volumes:
+      - ${OPENGAUSS_SOURCE_DIR}:/workspace/openGauss-server
+      - ${OPENGAUSS_THIRD_PARTY_DIR}:/workspace/openGauss-third_party
+      - opengauss_install_cache:${OPENGAUSS_INSTALL_PREFIX}
+      - opengauss_build_cache:/workspace/opengauss-build
+      - ../opengauss/init:/opt/opengauss/bootstrap:ro
+      - ../../sql:/opt/opengauss/sql:ro
+      - ../../benchmarks:/workspace/benchmarks
+      - ../../experiments:/workspace/experiments
+    networks:
+      - oglab
+
+volumes:
+  opengauss_install_cache:
+  opengauss_build_cache:

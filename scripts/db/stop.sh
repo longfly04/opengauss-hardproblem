@@ -7,6 +7,7 @@ source "$SCRIPT_DIR/../lib/common.sh"
 
 FULL_OBSERVABILITY=0
 REMOVE_VOLUMES=0
+RUNTIME_MODE=""
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -15,6 +16,10 @@ while [[ $# -gt 0 ]]; do
       ;;
     --volumes)
       REMOVE_VOLUMES=1
+      ;;
+    --mode)
+      RUNTIME_MODE="$2"
+      shift
       ;;
     *)
       fail "unknown argument: $1"
@@ -25,6 +30,10 @@ done
 
 ensure_cmd docker
 ensure_env_file
+
+if [[ -n "$RUNTIME_MODE" ]]; then
+  export OPENGAUSS_RUNTIME_MODE="$RUNTIME_MODE"
+fi
 
 args=(down)
 if [[ "$REMOVE_VOLUMES" -eq 1 ]]; then

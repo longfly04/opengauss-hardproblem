@@ -21,6 +21,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 [[ -n "$RUN_DIR" ]] || fail "--run-dir is required"
+ensure_env_file
 mkdir -p "$RUN_DIR/compose" "$RUN_DIR/configs" "$RUN_DIR/prometheus"
 
 cp "$ENV_FILE" "$RUN_DIR/configs/runtime.env"
@@ -29,6 +30,6 @@ cp "$REPO_ROOT/experiments/configs/base/database.yaml" "$RUN_DIR/configs/" 2>/de
 cp "$REPO_ROOT/experiments/configs/base/workloads.yaml" "$RUN_DIR/configs/" 2>/dev/null || true
 
 compose ps > "$RUN_DIR/compose/compose-ps.txt" || true
-compose logs --no-color --tail 200 opengauss og-memory-exporter prometheus grafana > "$RUN_DIR/compose/core-services.log" || true
+compose logs --no-color --tail 200 "$DB_SERVICE_NAME" og-memory-exporter prometheus grafana > "$RUN_DIR/compose/core-services.log" || true
 "$REPO_ROOT/scripts/db/collect-settings.sh" "$RUN_DIR/configs/current-settings.tsv" || true
 "$REPO_ROOT/scripts/observe/snapshot-metrics.sh" --output-dir "$RUN_DIR/prometheus" || true

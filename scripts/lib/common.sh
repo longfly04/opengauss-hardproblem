@@ -4,6 +4,8 @@ set -euo pipefail
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd -- "$SCRIPT_DIR/../.." && pwd)"
 COMPOSE_FILE="$REPO_ROOT/env/compose/docker-compose.yml"
+STOCK_COMPOSE_FILE="$REPO_ROOT/env/compose/docker-compose.stock.yml"
+SOURCE_COMPOSE_FILE="$REPO_ROOT/env/compose/docker-compose.source.yml"
 OBS_COMPOSE_FILE="$REPO_ROOT/env/compose/docker-compose.observability.yml"
 ENV_FILE="$REPO_ROOT/env/compose/.env"
 ENV_EXAMPLE_FILE="$REPO_ROOT/env/compose/.env.example"
@@ -22,6 +24,8 @@ ensure_cmd() {
 }
 
 ensure_env_file() {
+  local runtime_mode_override="${OPENGAUSS_RUNTIME_MODE:-}"
+
   if [[ ! -f "$ENV_FILE" ]]; then
     cp "$ENV_EXAMPLE_FILE" "$ENV_FILE"
     log "created default env file at $ENV_FILE"
@@ -31,14 +35,30 @@ ensure_env_file() {
   # shellcheck disable=SC1090
   source "$ENV_FILE"
   set +a
+
+  if [[ -n "$runtime_mode_override" ]]; then
+    export OPENGAUSS_RUNTIME_MODE="$runtime_mode_override"
+  fi
+}
+
+compose_files() {
+  ensure_env_file
+  local files=("-f" "$COMPOSE_FILE")
+  if [[ "${OPENGAUSS_RUNTIME_MODE:-stock}" == "source" ]]; then
+    files+=("-f" "$SOURCE_COMPOSE_FILE")
+  else
+    files+=("-f" "$STOCK_COMPOSE_FILE")
+  fi
+  printf '%s\n' "${files[@]}"
 }
 
 compose() {
   ensure_env_file
+  mapfile -t files < <(compose_files)
   if docker compose version >/dev/null 2>&1; then
-    docker compose --env-file "$ENV_FILE" -f "$COMPOSE_FILE" "$@"
+    docker compose --env-file "$ENV_FILE" "${files[@]}" "$@"
   elif command -v docker-compose >/dev/null 2>&1; then
-    docker-compose --env-file "$ENV_FILE" -f "$COMPOSE_FILE" "$@"
+    docker-compose --env-file "$ENV_FILE" "${files[@]}" "$@"
   else
     fail "docker compose plugin or docker-compose is required"
   fi
@@ -46,10 +66,12 @@ compose() {
 
 compose_obs() {
   ensure_env_file
+  mapfile -t files < <(compose_files)
+  files+=("-f" "$OBS_COMPOSE_FILE")
   if docker compose version >/dev/null 2>&1; then
-    docker compose --env-file "$ENV_FILE" -f "$COMPOSE_FILE" -f "$OBS_COMPOSE_FILE" "$@"
+    docker compose --env-file "$ENV_FILE" "${files[@]}" "$@"
   elif command -v docker-compose >/dev/null 2>&1; then
-    docker-compose --env-file "$ENV_FILE" -f "$COMPOSE_FILE" -f "$OBS_COMPOSE_FILE" "$@"
+    docker-compose --env-file "$ENV_FILE" "${files[@]}" "$@"
   else
     fail "docker compose plugin or docker-compose is required"
   fi
@@ -62,7 +84,7 @@ wait_for_db() {
   local i
 
   for ((i = 1; i <= retries; i++)); do
-    if compose exec -T -u omm opengauss gsql -d postgres -Atqc "select 1" >/dev/null 2>&1; then
+    if compose exec -T -u "$DB_CONTAINER_USER" "$DB_SERVICE_NAME" "$DB_CLIENT_BIN" -d postgres -Atqc "select 1" >/dev/null 2>&1; then
       log "openGauss is ready"
       return 0
     fi
@@ -77,14 +99,14 @@ run_gsql() {
   ensure_env_file
   local database="$1"
   local sql="$2"
-  compose exec -T -u omm opengauss gsql -v ON_ERROR_STOP=1 -d "$database" -Atqc "$sql"
+  compose exec -T -u "$DB_CONTAINER_USER" "$DB_SERVICE_NAME" "$DB_CLIENT_BIN" -v ON_ERROR_STOP=1 -d "$database" -Atqc "$sql"
 }
 
 run_gsql_file() {
   ensure_env_file
   local database="$1"
   local file_path="$2"
-  compose exec -T -u omm opengauss gsql -v ON_ERROR_STOP=1 -d "$database" -f "$file_path"
+  compose exec -T -u "$DB_CONTAINER_USER" "$DB_SERVICE_NAME" "$DB_CLIENT_BIN" -v ON_ERROR_STOP=1 -d "$database" -f "$file_path"
 }
 
 load_flat_yaml() {

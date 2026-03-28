@@ -43,7 +43,7 @@ run_one() {
   local log_file="$OUTPUT_DIR/${query_name%.sql}.log"
   local started="$(date +%s)"
 
-  compose exec -T -u omm opengauss gsql -d "$DB_NAME" -v ON_ERROR_STOP=1 -f "$container_path" > "$log_file" 2>&1
+  run_gsql_file "$DB_NAME" "$container_path" > "$log_file" 2>&1
 
   local finished="$(date +%s)"
   printf '%s\t%s\t%s\n' "$query_name" "$((finished - started))" "$log_file" >> "$SUMMARY_FILE"

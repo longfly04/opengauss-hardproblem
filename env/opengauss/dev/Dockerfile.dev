@@ -1,0 +1,60 @@
+ARG OPENGAUSS_BUILD_TYPE=debug
+ARG OPENGAUSS_INSTALL_PREFIX=/opt/opengauss/install
+
+FROM ubuntu:22.04
+ARG OPENGAUSS_BUILD_TYPE
+ARG OPENGAUSS_INSTALL_PREFIX
+ENV DEBIAN_FRONTEND=noninteractive
+ENV OPENGAUSS_BUILD_TYPE=${OPENGAUSS_BUILD_TYPE}
+ENV OPENGAUSS_INSTALL_PREFIX=${OPENGAUSS_INSTALL_PREFIX}
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+      bash \
+      build-essential \
+      ca-certificates \
+      ccache \
+      cmake \
+      flex \
+      bison \
+      g++ \
+      gcc \
+      gdb \
+      gdbserver \
+      git \
+      libaio-dev \
+      libedit-dev \
+      libevent-dev \
+      libffi-dev \
+      libkrb5-dev \
+      liblz4-dev \
+      libncurses5-dev \
+      libnuma-dev \
+      libreadline-dev \
+      libssl-dev \
+      libxml2-dev \
+      make \
+      net-tools \
+      openssh-client \
+      pkg-config \
+      python3 \
+      rsync \
+      sudo \
+      wget \
+      zlib1g-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN groupadd -g 1000 omm \
+    && useradd -m -u 1000 -g 1000 -s /bin/bash omm \
+    && mkdir -p /workspace /workspace/opengauss-build /var/log/opengauss /opt/opengauss/install \
+    && chown -R omm:omm /workspace /var/log/opengauss /opt/opengauss
+
+COPY env/opengauss/dev/scripts/dev-build.sh /usr/local/bin/dev-build.sh
+COPY env/opengauss/dev/scripts/dev-configure.sh /usr/local/bin/dev-configure.sh
+COPY env/opengauss/dev/scripts/dev-run.sh /usr/local/bin/dev-run.sh
+COPY env/opengauss/dev/scripts/dev-debug.sh /usr/local/bin/dev-debug.sh
+RUN chmod +x /usr/local/bin/dev-build.sh /usr/local/bin/dev-configure.sh /usr/local/bin/dev-run.sh /usr/local/bin/dev-debug.sh
+
+USER omm
+WORKDIR /workspace/openGauss-server
+CMD ["bash"]

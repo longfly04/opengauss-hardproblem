@@ -47,9 +47,11 @@ compose build tpcc-runner
 mkdir -p "$(dirname -- "$CONFIG_OUTPUT")"
 mkdir -p "${LOG_FILE:+$(dirname -- "$LOG_FILE")}" 2>/dev/null || true
 
+JDBC_URL="jdbc:opengauss://$DB_HOST:$DB_PORT/$DB_NAME?prepareThreshold=0"
+
 sed \
   -e "s|__JDBC_DRIVER__|org.opengauss.Driver|g" \
-  -e "s|__JDBC_URL__|jdbc:opengauss://opengauss:5432/$DB_NAME?prepareThreshold=0|g" \
+  -e "s|__JDBC_URL__|$JDBC_URL|g" \
   -e "s|__DB_USER__|$BENCH_USER|g" \
   -e "s|__DB_PASSWORD__|$BENCH_PASSWORD|g" \
   -e "s|__SCALE_FACTOR__|$SCALE_FACTOR|g" \

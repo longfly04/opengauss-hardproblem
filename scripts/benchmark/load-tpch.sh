@@ -47,7 +47,7 @@ run_gsql_file "$DB_NAME" /workspace/benchmarks/tpch/schema.sql
 
 for table_name in region nation supplier customer part partsupp orders lineitem; do
   log "loading TPCH table: $table_name"
-  compose exec -T -u omm opengauss gsql -d "$DB_NAME" -v ON_ERROR_STOP=1 -c "\\copy $table_name from '/workspace/benchmarks/tpch/generated/data/${table_name}.csv' with (format csv, delimiter '|')"
+  run_gsql "$DB_NAME" "\\copy $table_name from '/workspace/benchmarks/tpch/generated/data/${table_name}.csv' with (format csv, delimiter '|')"
 done
 
 log "TPCH data load complete"

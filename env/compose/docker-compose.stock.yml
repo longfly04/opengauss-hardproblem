@@ -1,0 +1,3 @@
+services:
+  opengauss:
+    image: ${OPENGAUSS_IMAGE}

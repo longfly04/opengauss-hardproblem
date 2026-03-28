@@ -1,6 +1,5 @@
 services:
   opengauss:
-    image: ${OPENGAUSS_IMAGE}
     container_name: ${COMPOSE_PROJECT_NAME}-opengauss
     restart: unless-stopped
     environment:
@@ -11,16 +10,21 @@ services:
       BENCH_PASSWORD: ${BENCH_PASSWORD}
       EXPORTER_USER: ${EXPORTER_USER}
       EXPORTER_PASSWORD: ${EXPORTER_PASSWORD}
+      OPENGAUSS_INSTALL_PREFIX: ${OPENGAUSS_INSTALL_PREFIX}
+      OPENGAUSS_DATA_DIR: ${OPENGAUSS_DATA_DIR}
+      OPENGAUSS_LOG_DIR: ${OPENGAUSS_LOG_DIR}
+      OPENGAUSS_NODE_NAME: ${OPENGAUSS_NODE_NAME}
+      DB_CONTAINER_USER: ${DB_CONTAINER_USER}
     ports:
       - "${DB_PORT}:5432"
     volumes:
-      - og_data:/var/lib/opengauss
+      - og_data:${OPENGAUSS_DATA_DIR}
       - ../opengauss/init:/opt/opengauss/bootstrap:ro
       - ../../sql:/opt/opengauss/sql:ro
       - ../../benchmarks:/workspace/benchmarks
       - ../../experiments:/workspace/experiments
     healthcheck:
-      test: ["CMD-SHELL", "export PGPASSWORD=\"$${GS_PASSWORD}\"; gsql -h 127.0.0.1 -U $${DB_ADMIN_USER:-gaussdb} -d postgres -Atqc 'select 1' >/dev/null 2>&1"]
+      test: ["CMD-SHELL", "su - ${DB_CONTAINER_USER:-omm} -c '${DB_CLIENT_BIN:-gsql} -d postgres -Atqc \"select 1\"' >/dev/null 2>&1"]
       interval: 10s
       timeout: 5s
       retries: 20
@@ -34,8 +38,8 @@ services:
     container_name: ${COMPOSE_PROJECT_NAME}-og-memory-exporter
     restart: unless-stopped
     environment:
-      DB_HOST: opengauss
-      DB_PORT: 5432
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
       DB_NAME: ${DB_NAME}
       DB_USER: ${EXPORTER_USER}
       DB_PASSWORD: ${EXPORTER_PASSWORD}

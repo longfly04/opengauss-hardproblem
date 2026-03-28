@@ -8,6 +8,7 @@ source "$SCRIPT_DIR/../lib/common.sh"
 FULL_OBSERVABILITY=0
 SKIP_INIT=0
 APPLY_SQL_FILE=""
+RUNTIME_MODE=""
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -21,6 +22,10 @@ while [[ $# -gt 0 ]]; do
       APPLY_SQL_FILE="$2"
       shift
       ;;
+    --mode)
+      RUNTIME_MODE="$2"
+      shift
+      ;;
     *)
       fail "unknown argument: $1"
       ;;
@@ -30,6 +35,14 @@ done
 
 ensure_cmd docker
 ensure_env_file
+
+if [[ -n "$RUNTIME_MODE" ]]; then
+  export OPENGAUSS_RUNTIME_MODE="$RUNTIME_MODE"
+fi
+
+if [[ "$OPENGAUSS_RUNTIME_MODE" == "source" ]]; then
+  "$REPO_ROOT/scripts/db/build-source.sh"
+fi
 
 if [[ "$FULL_OBSERVABILITY" -eq 1 ]]; then
   log "starting openGauss lab with host observability"
@@ -58,5 +71,6 @@ if [[ -n "$APPLY_SQL_FILE" ]]; then
 fi
 
 log "openGauss lab is ready"
+log "runtime mode: ${OPENGAUSS_RUNTIME_MODE}"
 log "grafana: http://localhost:${GRAFANA_PORT}"
 log "prometheus: http://localhost:${PROMETHEUS_PORT}"

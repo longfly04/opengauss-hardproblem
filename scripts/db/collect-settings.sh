@@ -9,6 +9,6 @@ OUTPUT_FILE="${1:-$REPO_ROOT/experiments/reports/current-settings.tsv}"
 mkdir -p "$(dirname -- "$OUTPUT_FILE")"
 
 ensure_env_file
-compose exec -T -u omm opengauss gsql -v ON_ERROR_STOP=1 -d "$DB_NAME" -Atqc "select name || E'\\t' || setting || E'\\t' || unit from pg_settings order by name" > "$OUTPUT_FILE"
+run_gsql "$DB_NAME" "select name || E'\\t' || setting || E'\\t' || unit from pg_settings order by name" > "$OUTPUT_FILE"
 
 printf 'wrote %s\n' "$OUTPUT_FILE"

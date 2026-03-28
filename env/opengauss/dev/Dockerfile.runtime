@@ -1,0 +1,57 @@
+ARG OPENGAUSS_DEV_IMAGE=local/opengauss-source-dev:latest
+ARG OPENGAUSS_BUILD_TYPE=debug
+ARG OPENGAUSS_INSTALL_PREFIX=/opt/opengauss/install
+
+FROM ${OPENGAUSS_DEV_IMAGE} AS devbase
+ARG OPENGAUSS_BUILD_TYPE
+ARG OPENGAUSS_INSTALL_PREFIX
+ENV OPENGAUSS_BUILD_TYPE=${OPENGAUSS_BUILD_TYPE}
+ENV OPENGAUSS_INSTALL_PREFIX=${OPENGAUSS_INSTALL_PREFIX}
+
+USER root
+COPY env/opengauss/dev/entrypoint.sh /usr/local/bin/opengauss-entrypoint.sh
+RUN chmod +x /usr/local/bin/opengauss-entrypoint.sh
+
+FROM ubuntu:22.04
+ARG OPENGAUSS_INSTALL_PREFIX
+ENV DEBIAN_FRONTEND=noninteractive
+ENV OPENGAUSS_INSTALL_PREFIX=${OPENGAUSS_INSTALL_PREFIX}
+ENV PATH=${OPENGAUSS_INSTALL_PREFIX}/bin:${PATH}
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+      bash \
+      gosu \
+      gdb \
+      gdbserver \
+      libaio1 \
+      libedit2 \
+      libevent-2.1-7 \
+      libffi8 \
+      libkrb5-3 \
+      liblz4-1 \
+      libncurses5 \
+      libnuma1 \
+      libreadline8 \
+      libssl3 \
+      libxml2 \
+      procps \
+      sudo \
+      zlib1g \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN groupadd -g 1000 omm \
+    && useradd -m -u 1000 -g 1000 -s /bin/bash omm \
+    && mkdir -p /var/lib/opengauss /var/log/opengauss /opt/opengauss/install \
+    && chown -R omm:omm /var/lib/opengauss /var/log/opengauss /opt/opengauss
+
+RUN for bin in gaussdb gs_ctl gs_initdb gsql; do \
+      printf '#!/usr/bin/env bash\nexport LD_LIBRARY_PATH="%s/lib:${LD_LIBRARY_PATH:-}"\nexec "%s/bin/%s" "$@"\n' "$OPENGAUSS_INSTALL_PREFIX" "$OPENGAUSS_INSTALL_PREFIX" "$bin" > "/usr/local/bin/$bin"; \
+      chmod +x "/usr/local/bin/$bin"; \
+    done
+
+COPY --from=devbase /usr/local/bin/opengauss-entrypoint.sh /usr/local/bin/opengauss-entrypoint.sh
+COPY --from=devbase /usr/local/bin/dev-run.sh /usr/local/bin/dev-run.sh
+COPY --from=devbase /usr/local/bin/dev-debug.sh /usr/local/bin/dev-debug.sh
+ENTRYPOINT ["/usr/local/bin/opengauss-entrypoint.sh"]
+CMD ["run"]

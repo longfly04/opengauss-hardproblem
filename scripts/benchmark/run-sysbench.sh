@@ -58,7 +58,7 @@ done
 ensure_cmd docker
 ensure_env_file
 
-cmd="sysbench --db-driver=pgsql --pgsql-host=opengauss --pgsql-port=5432 --pgsql-db=$DB_NAME --pgsql-user=$BENCH_USER --pgsql-password=$BENCH_PASSWORD --tables=$TABLES --table-size=$TABLE_SIZE --report-interval=$REPORT_INTERVAL --threads=$THREADS --time=$TIME_SECONDS $WORKLOAD"
+cmd="sysbench --db-driver=pgsql --pgsql-host=$DB_HOST --pgsql-port=$DB_PORT --pgsql-db=$DB_NAME --pgsql-user=$BENCH_USER --pgsql-password=$BENCH_PASSWORD --tables=$TABLES --table-size=$TABLE_SIZE --report-interval=$REPORT_INTERVAL --threads=$THREADS --time=$TIME_SECONDS $WORKLOAD"
 
 case "$MODE" in
   prepare)
