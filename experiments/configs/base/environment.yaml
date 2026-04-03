@@ -1,5 +1,5 @@
 docker_mode: compose
 full_observability: false
 observe_interval_seconds: 15
-prometheus_port: 9090
-grafana_port: 3000
+prometheus_port: 59090
+grafana_port: 53000

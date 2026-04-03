@@ -6,7 +6,7 @@ BEGIN
     SELECT 1
     FROM pg_class c
     JOIN pg_namespace n ON n.oid = c.relnamespace
-    WHERE c.relname = 'summary_stat_database'
+    WHERE c.relname = 'pg_stat_database'
   ) THEN
     EXECUTE $sql$
       CREATE OR REPLACE VIEW lab_obs.database_spill_stats AS
@@ -20,7 +20,7 @@ BEGIN
              tup_inserted,
              tup_updated,
              tup_deleted
-      FROM summary_stat_database
+      FROM pg_stat_database
     $sql$;
   END IF;
 END

@@ -1,16 +1,14 @@
-\getenv db_name DB_NAME
-\getenv bench_user BENCH_USER
-\getenv exporter_user EXPORTER_USER
-
-ALTER SYSTEM SET track_activities = on;
-ALTER SYSTEM SET track_counts = on;
-ALTER SYSTEM SET log_temp_files = 0;
-ALTER SYSTEM SET log_min_duration_statement = 1000;
+-- track_activities 和 track_counts 已经默认开启，不需要通过 ALTER SYSTEM 设置
+-- log_temp_files 和 log_min_duration_statement 需要在配置文件中设置，不支持 ALTER SYSTEM
 SELECT pg_reload_conf();
 
 DO $$
+DECLARE
+  db_name text := 'benchdb';
+  bench_user text := 'bench';
+  exporter_user text := 'exporter';
 BEGIN
-  EXECUTE format('GRANT CONNECT ON DATABASE %I TO %I', :'db_name', :'bench_user');
-  EXECUTE format('GRANT CONNECT ON DATABASE %I TO %I', :'db_name', :'exporter_user');
+  EXECUTE format('GRANT CONNECT ON DATABASE %I TO %I', db_name, bench_user);
+  EXECUTE format('GRANT CONNECT ON DATABASE %I TO %I', db_name, exporter_user);
 END
 $$;

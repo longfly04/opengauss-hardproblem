@@ -1,6 +1,6 @@
 <parameters>
-  <type>tpcc</type>
-  <driver>__JDBC_DRIVER__</driver>
+  <type>POSTGRES</type>
+  <driver>org.postgresql.Driver</driver>
   <url>__JDBC_URL__</url>
   <username>__DB_USER__</username>
   <password>__DB_PASSWORD__</password>

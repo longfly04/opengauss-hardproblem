@@ -1,5 +1,5 @@
 scenario_name: tpcc-steady
-tp_runner: tpcc
+tp_runner: sysbench
 enable_injection: false
 load_tpch_data: false
 dataset_profile_file: benchmarks/datasets/profiles/small-local.yaml
@@ -7,5 +7,7 @@ hardware_profile_file: experiments/configs/hardware-profiles/local-dev.yaml
 sql_preset: sql/tuning/baseline_params.sql
 duration_seconds: 300
 warmup_seconds: 60
-tpcc_scalefactor: 10
-tpcc_terminals: 32
+sysbench_tables: 8
+sysbench_table_size: 50000
+sysbench_threads: 64
+sysbench_report_interval: 1

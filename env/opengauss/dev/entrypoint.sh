@@ -54,7 +54,7 @@ case "$MODE" in
     tail -F "$LOG_DIR/opengauss.log"
     ;;
   debug)
-    gosu "$DB_CONTAINER_USER" gdbserver 0.0.0.0:2345 "$INSTALL_PREFIX/bin/gaussdb" -D "$DATA_DIR" -Z single_node
+    gosu "$DB_CONTAINER_USER" gdbserver 0.0.0.0:52345 "$INSTALL_PREFIX/bin/gaussdb" -D "$DATA_DIR" -Z single_node
     ;;
   shell)
     exec gosu "$DB_CONTAINER_USER" bash

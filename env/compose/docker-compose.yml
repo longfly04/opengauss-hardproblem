@@ -15,6 +15,7 @@ services:
       OPENGAUSS_LOG_DIR: ${OPENGAUSS_LOG_DIR}
       OPENGAUSS_NODE_NAME: ${OPENGAUSS_NODE_NAME}
       DB_CONTAINER_USER: ${DB_CONTAINER_USER}
+      LD_LIBRARY_PATH: /usr/local/opengauss/lib
     ports:
       - "${DB_PORT}:5432"
     volumes:
@@ -39,11 +40,11 @@ services:
     restart: unless-stopped
     environment:
       DB_HOST: ${DB_HOST}
-      DB_PORT: ${DB_PORT}
+      DB_PORT: 5432
       DB_NAME: ${DB_NAME}
       DB_USER: ${EXPORTER_USER}
       DB_PASSWORD: ${EXPORTER_PASSWORD}
-      EXPORTER_PORT: ${OG_MEMORY_EXPORTER_PORT}
+      EXPORTER_PORT: 9188
     ports:
       - "${OG_MEMORY_EXPORTER_PORT}:9188"
     depends_on:
@@ -53,7 +54,7 @@ services:
       - oglab
 
   prometheus:
-    image: prom/prometheus:latest
+    image: m.daocloud.io/docker.io/prom/prometheus:latest
     container_name: ${COMPOSE_PROJECT_NAME}-prometheus
     restart: unless-stopped
     command:
@@ -72,7 +73,7 @@ services:
       - oglab
 
   grafana:
-    image: grafana/grafana:latest
+    image: m.daocloud.io/docker.io/grafana/grafana:latest
     container_name: ${COMPOSE_PROJECT_NAME}-grafana
     restart: unless-stopped
     ports:
@@ -92,7 +93,9 @@ services:
       - oglab
 
   sysbench:
-    image: ${SYSBENCH_IMAGE}
+    build:
+      context: ../../benchmarks/sysbench
+    image: ${COMPOSE_PROJECT_NAME}/sysbench:latest
     profiles: ["bench"]
     working_dir: /workspace
     volumes:

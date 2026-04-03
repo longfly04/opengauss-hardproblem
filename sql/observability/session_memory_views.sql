@@ -19,13 +19,13 @@ BEGIN
   ) THEN
     EXECUTE $sql$
       CREATE OR REPLACE VIEW lab_obs.session_memory_summary AS
-      SELECT coalesce(datname, current_database()) AS datname,
+      SELECT current_database() AS datname,
              sessid,
              sum(totalsize)::bigint AS total_bytes,
              sum(freesize)::bigint AS free_bytes,
              sum(usedsize)::bigint AS used_bytes
       FROM gs_session_memory_detail
-      GROUP BY coalesce(datname, current_database()), sessid
+      GROUP BY sessid
     $sql$;
 
     EXECUTE $sql$

@@ -14,7 +14,8 @@ services:
       - oglab
 
   cadvisor:
-    image: gcr.io/cadvisor/cadvisor:latest
+    # 使用DaoCloud镜像源替代gcr.io
+    image: m.daocloud.io/gcr.io/cadvisor/cadvisor:latest
     container_name: ${COMPOSE_PROJECT_NAME}-cadvisor
     restart: unless-stopped
     privileged: true

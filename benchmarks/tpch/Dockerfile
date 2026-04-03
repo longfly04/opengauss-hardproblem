@@ -1,4 +1,4 @@
-FROM debian:bookworm-slim
+FROM docker.1ms.run/debian:bookworm-slim
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends build-essential ca-certificates git make gawk sed \

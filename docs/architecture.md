@@ -1,7 +1,7 @@
 # Architecture
 
 ## 总体设计
-本仓库采用 **稳定实验契约 + 可切换数据库产出方式** 的结构：
+本仓库采用 **基线模式 + 源码开发模式** 的结构：
 - `opengauss`：数据库服务名固定不变。
 - `og-memory-exporter`：通过 SQL 视图暴露共享内存、会话内存、spill 指标。
 - `prometheus` / `grafana`：采集与可视化。
@@ -38,7 +38,7 @@ Compose 被拆成三层：
 
 这样 benchmark、exporter、scenario 脚本不需要改调用方式，只切换 mode 即可。
 
-## 稳定运行时契约
+## 基线模式
 以下参数统一由 [env/compose/.env](../env/compose/.env) 管理：
 - `DB_SERVICE_NAME`
 - `DB_HOST`

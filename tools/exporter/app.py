@@ -1,6 +1,16 @@
 import os
 import time
+import logging
+import sys
 from typing import Iterable, List, Sequence, Tuple
+
+# Configure logging
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    stream=sys.stdout
+)
+logger = logging.getLogger(__name__)
 
 import psycopg2
 from prometheus_client import REGISTRY, start_http_server
@@ -150,7 +160,9 @@ class OpenGaussCollector:
         overall_success = True
 
         try:
+            logger.debug(f"Attempting to connect to {DB_HOST}:{DB_PORT}/{DB_NAME} as {DB_USER}")
             with connect() as conn:
+                logger.debug("Connection successful")
                 conn.autocommit = True
                 with conn.cursor() as cursor:
                     for query_name, metric_handler in (
@@ -172,12 +184,18 @@ class OpenGaussCollector:
                         ("settings", lambda rows: [setting_bytes.add_metric([str(name)], float(value)) for name, value in rows]),
                     ):
                         try:
-                            metric_handler(fetch_all(cursor, QUERIES[query_name]))
+                            logger.debug(f"Executing query: {query_name}")
+                            rows = fetch_all(cursor, QUERIES[query_name])
+                            logger.debug(f"Query returned {len(rows)} rows")
+                            metric_handler(rows)
                             query_success.add_metric([query_name], 1)
-                        except Exception:
+                            logger.debug(f"Query {query_name} succeeded")
+                        except Exception as e:
+                            logger.error(f"Query {query_name} failed: {e}")
                             overall_success = False
                             query_success.add_metric([query_name], 0)
-        except Exception:
+        except Exception as e:
+            logger.error(f"Connection failed: {e}")
             overall_success = False
             for query_name in QUERIES:
                 query_success.add_metric([query_name], 0)

@@ -1,8 +1,4 @@
-ALTER SYSTEM SET track_activities = on;
-ALTER SYSTEM SET track_counts = on;
-ALTER SYSTEM SET log_temp_files = 0;
-ALTER SYSTEM SET log_min_duration_statement = 1000;
-ALTER SYSTEM SET work_mem = '64MB';
-ALTER SYSTEM SET maintenance_work_mem = '1GB';
-ALTER SYSTEM SET temp_buffers = '32MB';
+-- track_activities 和 track_counts 已经默认开启，不支持 ALTER SYSTEM 设置
+-- log_temp_files 和 log_min_duration_statement 需要在配置文件中设置，不支持 ALTER SYSTEM
+-- work_mem, maintenance_work_mem, temp_buffers 也需要在配置文件中设置，不支持 ALTER SYSTEM
 SELECT pg_reload_conf();

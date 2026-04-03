@@ -58,7 +58,9 @@ done
 ensure_cmd docker
 ensure_env_file
 
-cmd="sysbench --db-driver=pgsql --pgsql-host=$DB_HOST --pgsql-port=$DB_PORT --pgsql-db=$DB_NAME --pgsql-user=$BENCH_USER --pgsql-password=$BENCH_PASSWORD --tables=$TABLES --table-size=$TABLE_SIZE --report-interval=$REPORT_INTERVAL --threads=$THREADS --time=$TIME_SECONDS $WORKLOAD"
+# 使用容器内部端口 5432，而不是主机映射端口
+# 注意：sysbench 容器的 ENTRYPOINT 已经是 sysbench，所以不需要前缀
+cmd="--db-driver=pgsql --pgsql-host=$DB_HOST --pgsql-port=5432 --pgsql-db=$DB_NAME --pgsql-user=$BENCH_USER --pgsql-password=$BENCH_PASSWORD --tables=$TABLES --table-size=$TABLE_SIZE --report-interval=$REPORT_INTERVAL --threads=$THREADS --time=$TIME_SECONDS $WORKLOAD"
 
 case "$MODE" in
   prepare)
@@ -78,7 +80,7 @@ esac
 mkdir -p "${OUTPUT_FILE:+$(dirname -- "$OUTPUT_FILE")}" 2>/dev/null || true
 
 if [[ -n "$OUTPUT_FILE" ]]; then
-  compose run --rm --no-deps sysbench sh -lc "$cmd" | tee "$OUTPUT_FILE"
+  compose run --rm --no-deps sysbench $cmd | tee "$OUTPUT_FILE"
 else
-  compose run --rm --no-deps sysbench sh -lc "$cmd"
+  compose run --rm --no-deps sysbench $cmd
 fi

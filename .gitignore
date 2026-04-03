@@ -1,0 +1,39 @@
+# 实验结果
+/experiments/runs/
+
+# 生成的数据
+/benchmarks/tpch/generated/
+/benchmarks/tpcc/config/generated_*.xml
+
+# 环境配置
+/env/compose/.env
+
+# Docker相关
+/docker-compose.yml
+/docker-compose.override.yml
+
+# 临时文件
+*.tmp
+*.temp
+
+# 编辑器配置
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Python相关
+__pycache__/
+*.pyc
+
+# 日志文件
+*.log
+
+# 二进制文件
+*.exe
+*.bin
+*.out
+
+# 操作系统相关
+.DS_Store
+Thumbs.db

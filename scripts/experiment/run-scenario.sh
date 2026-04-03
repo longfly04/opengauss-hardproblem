@@ -45,9 +45,13 @@ if [[ "${DOCKER_MODE:-compose}" == "compose" ]]; then
 fi
 
 if [[ "${TP_RUNNER:-sysbench}" == "sysbench" ]]; then
+  log "Preparing sysbench data..."
   "$REPO_ROOT/scripts/benchmark/run-sysbench.sh" --mode prepare --tables "${SYSBENCH_TABLES:-8}" --table-size "${SYSBENCH_TABLE_SIZE:-50000}" --threads "${SYSBENCH_THREADS:-64}" --time 30 --output "$TP_LOG_DIR/sysbench-prepare.log"
+  log "Sysbench data preparation complete"
 else
+  log "Loading TPCC data..."
   "$REPO_ROOT/scripts/benchmark/load-tpcc.sh" --scalefactor "${TPCC_SCALEFACTOR:-10}" --terminals "${TPCC_TERMINALS:-32}" --duration "${DURATION_SECONDS:-300}" --output "$TP_LOG_DIR/tpcc-load.log"
+  log "TPCC data loading complete"
 fi
 
 if [[ "${LOAD_TPCH_DATA:-true}" == "true" ]]; then

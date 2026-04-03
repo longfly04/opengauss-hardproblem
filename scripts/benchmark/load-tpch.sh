@@ -35,7 +35,12 @@ compose build tpch-tools
 mkdir -p "$DATA_DIR"
 
 log "generating TPCH data at scale factor $SCALE_FACTOR"
-compose run --rm --no-deps tpch-tools bash -lc "cd /opt/tpch-kit/dbgen && ./dbgen -vf -s $SCALE_FACTOR && mkdir -p /workspace/benchmarks/tpch/generated/data && for tbl in *.tbl; do sed 's/|$//' \"$tbl\" > \"/workspace/benchmarks/tpch/generated/data/${tbl%.tbl}.csv\"; done"
+cat > /tmp/generate-tpch.sh << 'EOF'
+cd /opt/tpch-kit/dbgen && ./dbgen -vf -s $1 && mkdir -p /workspace/benchmarks/tpch/generated/data && for tbl in *.tbl; do if [ -f "$tbl" ]; then sed 's/|$//' "$tbl" > "/workspace/benchmarks/tpch/generated/data/${tbl%.tbl}.csv"; fi; done
+EOF
+chmod +x /tmp/generate-tpch.sh
+compose run --rm --no-deps -v /tmp/generate-tpch.sh:/tmp/generate-tpch.sh --entrypoint="bash" tpch-tools -c "/tmp/generate-tpch.sh $SCALE_FACTOR"
+rm /tmp/generate-tpch.sh
 
 if [[ "$GENERATE_ONLY" -eq 1 ]]; then
   log "generated TPCH flat files only"
@@ -43,6 +48,7 @@ if [[ "$GENERATE_ONLY" -eq 1 ]]; then
 fi
 
 wait_for_db
+run_gsql "$DB_NAME" "DROP TABLE IF EXISTS lineitem CASCADE; DROP TABLE IF EXISTS orders CASCADE; DROP TABLE IF EXISTS partsupp CASCADE; DROP TABLE IF EXISTS part CASCADE; DROP TABLE IF EXISTS supplier CASCADE; DROP TABLE IF EXISTS customer CASCADE; DROP TABLE IF EXISTS nation CASCADE; DROP TABLE IF EXISTS region CASCADE;"
 run_gsql_file "$DB_NAME" /workspace/benchmarks/tpch/schema.sql
 
 for table_name in region nation supplier customer part partsupp orders lineitem; do
