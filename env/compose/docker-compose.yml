@@ -82,6 +82,7 @@ services:
       GF_SECURITY_ADMIN_USER: admin
       GF_SECURITY_ADMIN_PASSWORD: admin
       GF_USERS_DEFAULT_THEME: light
+      GF_USERS_DEFAULT_LANGUAGE: zh-CN
     volumes:
       - ../grafana/provisioning/datasources:/etc/grafana/provisioning/datasources:ro
       - ../grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards:ro

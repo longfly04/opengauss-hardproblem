@@ -52,6 +52,19 @@ QUERIES = {
         SELECT name, setting_bytes::bigint
         FROM lab_obs.selected_settings
     """,
+    "execution_plans": """
+        SELECT datname, query_type, count(*) AS query_count
+        FROM lab_obs.execution_plans
+        GROUP BY datname, query_type
+    """,
+    "execution_plan_metrics": """
+        SELECT datname, 
+               explain_queries_count,
+               normal_queries_count,
+               avg_query_duration_seconds,
+               max_query_duration_seconds
+        FROM lab_obs.execution_plan_metrics
+    """,
 }
 
 
@@ -140,6 +153,31 @@ class OpenGaussCollector:
             "Selected byte-sized database settings.",
             labels=["setting"],
         )
+        execution_plan_queries = GaugeMetricFamily(
+            "opengauss_execution_plan_queries",
+            "Execution plan query count by database and query type.",
+            labels=["database", "query_type"],
+        )
+        execution_plan_explain_count = GaugeMetricFamily(
+            "opengauss_execution_plan_explain_count",
+            "Count of EXPLAIN queries by database.",
+            labels=["database"],
+        )
+        execution_plan_normal_count = GaugeMetricFamily(
+            "opengauss_execution_plan_normal_count",
+            "Count of normal queries by database.",
+            labels=["database"],
+        )
+        execution_plan_avg_duration = GaugeMetricFamily(
+            "opengauss_execution_plan_avg_duration_seconds",
+            "Average query duration by database.",
+            labels=["database"],
+        )
+        execution_plan_max_duration = GaugeMetricFamily(
+            "opengauss_execution_plan_max_duration_seconds",
+            "Maximum query duration by database.",
+            labels=["database"],
+        )
 
         families: Sequence[GaugeMetricFamily] = [
             collection_success,
@@ -155,6 +193,11 @@ class OpenGaussCollector:
             shared_free,
             shared_used,
             setting_bytes,
+            execution_plan_queries,
+            execution_plan_explain_count,
+            execution_plan_normal_count,
+            execution_plan_avg_duration,
+            execution_plan_max_duration,
         ]
 
         overall_success = True
@@ -182,6 +225,13 @@ class OpenGaussCollector:
                             shared_used.add_metric([str(context)], float(used))
                         ) for context, total, free, used in rows]),
                         ("settings", lambda rows: [setting_bytes.add_metric([str(name)], float(value)) for name, value in rows]),
+                        ("execution_plans", lambda rows: [execution_plan_queries.add_metric([str(dat), str(query_type)], float(count)) for dat, query_type, count in rows]),
+                        ("execution_plan_metrics", lambda rows: [(
+                            execution_plan_explain_count.add_metric([str(dat)], float(explain_count)),
+                            execution_plan_normal_count.add_metric([str(dat)], float(normal_count)),
+                            execution_plan_avg_duration.add_metric([str(dat)], float(avg_duration) if avg_duration is not None else 0),
+                            execution_plan_max_duration.add_metric([str(dat)], float(max_duration) if max_duration is not None else 0)
+                        ) for dat, explain_count, normal_count, avg_duration, max_duration in rows]),
                     ):
                         try:
                             logger.debug(f"Executing query: {query_name}")

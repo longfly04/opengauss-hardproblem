@@ -32,6 +32,19 @@ services:
     networks:
       - oglab
 
+  # flamegraph:
+  #   build:
+  #     context: ../../tools/flamegraph
+  #   image: ${COMPOSE_PROJECT_NAME}/flamegraph:latest
+  #   container_name: ${COMPOSE_PROJECT_NAME}-flamegraph
+  #   restart: unless-stopped
+  #   privileged: true
+  #   volumes:
+  #     - /:/host:ro
+  #     - ../../experiments:/workspace/experiments
+  #   networks:
+  #     - oglab
+
 networks:
   oglab:
     name: ${COMPOSE_PROJECT_NAME}-net

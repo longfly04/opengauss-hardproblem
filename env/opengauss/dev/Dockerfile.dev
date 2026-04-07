@@ -42,6 +42,9 @@ RUN apt-get update \
       sudo \
       wget \
       zlib1g-dev \
+      linux-tools-common \
+      linux-tools-generic \
+      linux-tools-$(uname -r) \
     && rm -rf /var/lib/apt/lists/*
 
 RUN groupadd -g 1000 omm \
