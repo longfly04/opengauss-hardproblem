@@ -1,70 +1,661 @@
 {
-  "annotations": {"list": []},
+  "annotations": {
+    "list": []
+  },
   "editable": true,
   "graphTooltip": 0,
   "panels": [
     {
-      "datasource": {"type": "prometheus", "uid": "prometheus"},
-      "fieldConfig": {"defaults": {"unit": "short"}, "overrides": []},
-      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0},
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 4,
+        "x": 0,
+        "y": 0
+      },
       "id": 1,
-      "options": {"legend": {"displayMode": "table", "placement": "bottom"}},
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
       "targets": [
-        {"expr": "sum(opengauss_activity_sessions)", "legendFormat": "all sessions"},
-        {"expr": "sum(opengauss_activity_sessions{state=~\"active|fastpath function call\"})", "legendFormat": "active sessions"}
+        {
+          "expr": "max(opengauss_injection_round_count{scenario=~\"$scenario\",run=~\"$run\"})",
+          "instant": true,
+          "refId": "A"
+        }
       ],
-      "title": "Session surge during injection",
-      "type": "timeseries"
+      "title": "Injection rounds",
+      "type": "stat"
     },
     {
-      "datasource": {"type": "prometheus", "uid": "prometheus"},
-      "fieldConfig": {"defaults": {"unit": "bytes"}, "overrides": []},
-      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0},
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 4,
+        "x": 4,
+        "y": 0
+      },
       "id": 2,
-      "options": {"legend": {"displayMode": "table", "placement": "bottom"}},
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
       "targets": [
-        {"expr": "sum(opengauss_temp_bytes_total)", "legendFormat": "temp bytes"},
-        {"expr": "rate(opengauss_temp_bytes_total[5m])", "legendFormat": "temp byte rate"}
+        {
+          "expr": "max(opengauss_run_validation_metric{scenario=~\"$scenario\",run=~\"$run\",metric=\"min_tps\"})",
+          "instant": true,
+          "refId": "A"
+        }
       ],
-      "title": "Temp IO growth",
-      "type": "timeseries"
+      "title": "Minimum foreground TPS",
+      "type": "stat"
     },
     {
-      "datasource": {"type": "prometheus", "uid": "prometheus"},
-      "fieldConfig": {"defaults": {"unit": "bytes"}, "overrides": []},
-      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 8},
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 4,
+        "x": 8,
+        "y": 0
+      },
       "id": 3,
-      "options": {"legend": {"displayMode": "table", "placement": "bottom"}},
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
       "targets": [
-        {"expr": "sum(opengauss_shared_context_used_bytes)", "legendFormat": "shared used"},
-        {"expr": "sum(opengauss_session_used_bytes)", "legendFormat": "session used"},
-        {"expr": "max(opengauss_session_used_bytes)", "legendFormat": "max session used"}
+        {
+          "expr": "max(opengauss_run_validation_metric{scenario=~\"$scenario\",run=~\"$run\",metric=\"tps_jitter_pct\"}) / 100",
+          "instant": true,
+          "refId": "A"
+        }
       ],
-      "title": "Memory pressure timeline",
+      "title": "Foreground jitter",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 4,
+        "x": 12,
+        "y": 0
+      },
+      "id": 4,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "expr": "max(opengauss_run_validation_metric{scenario=~\"$scenario\",run=~\"$run\",metric=\"peak_temp_bytes\"})",
+          "instant": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Peak temp bytes",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 4,
+        "x": 16,
+        "y": 0
+      },
+      "id": 5,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "expr": "max(opengauss_run_validation_metric{scenario=~\"$scenario\",run=~\"$run\",metric=\"peak_active_sessions\"})",
+          "instant": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Peak active sessions",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 4,
+        "x": 20,
+        "y": 0
+      },
+      "id": 6,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "expr": "sum(opengauss_plan_query_duration_sanity_ok{scenario=~\"$scenario\",run=~\"$run\",analysis=~\"$round\"} == bool 0)",
+          "instant": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Flagged injection queries",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 5
+      },
+      "id": 7,
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom"
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "opengauss_run_sysbench_tps{scenario=~\"$scenario\",run=~\"$run\"}",
+          "legendFormat": "{{run}} threads={{threads}}"
+        }
+      ],
+      "title": "Foreground TPS during injection",
       "type": "timeseries"
     },
     {
-      "datasource": {"type": "prometheus", "uid": "prometheus"},
-      "fieldConfig": {"defaults": {"unit": "bytes"}, "overrides": []},
-      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 8},
-      "id": 4,
-      "options": {"legend": {"displayMode": "table", "placement": "bottom"}},
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ms"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 5
+      },
+      "id": 8,
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom"
+        }
+      },
       "targets": [
-        {"expr": "container_memory_working_set_bytes{name=~\".*opengauss.*\"}", "legendFormat": "container rss"},
-        {"expr": "node_memory_MemAvailable_bytes", "legendFormat": "host available"}
+        {
+          "refId": "A",
+          "expr": "opengauss_run_sysbench_latency_p95_ms{scenario=~\"$scenario\",run=~\"$run\"}",
+          "legendFormat": "{{run}} threads={{threads}}"
+        }
       ],
-      "title": "Host and container memory",
+      "title": "Foreground P95 latency during injection",
       "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 13
+      },
+      "id": 9,
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom"
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "opengauss_run_sysbench_errors_per_sec{scenario=~\"$scenario\",run=~\"$run\"}",
+          "legendFormat": "err/s {{run}}/{{threads}}"
+        },
+        {
+          "refId": "B",
+          "expr": "opengauss_run_sysbench_reconnections_per_sec{scenario=~\"$scenario\",run=~\"$run\"}",
+          "legendFormat": "reconn/s {{run}}/{{threads}}"
+        }
+      ],
+      "title": "Foreground errors / reconnections",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 13
+      },
+      "id": 10,
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom"
+        }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "opengauss_run_sysbench_read_qps{scenario=~\"$scenario\",run=~\"$run\"}",
+          "legendFormat": "read {{run}}/{{threads}}"
+        },
+        {
+          "refId": "B",
+          "expr": "opengauss_run_sysbench_write_qps{scenario=~\"$scenario\",run=~\"$run\"}",
+          "legendFormat": "write {{run}}/{{threads}}"
+        },
+        {
+          "refId": "C",
+          "expr": "opengauss_run_sysbench_other_qps{scenario=~\"$scenario\",run=~\"$run\"}",
+          "legendFormat": "other {{run}}/{{threads}}"
+        }
+      ],
+      "title": "Foreground read / write / other QPS",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ms"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 0,
+        "y": 21
+      },
+      "id": 11,
+      "options": {
+        "displayMode": "basic",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showUnfilled": false
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "instant": true,
+          "expr": "topk(20, opengauss_injection_query_execution_time_ms{scenario=~\"$scenario\",run=~\"$run\",round=~\"$round\"})",
+          "legendFormat": "{{round}} {{query_name}}"
+        }
+      ],
+      "title": "Injection query runtime",
+      "type": "bargauge"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 12,
+        "y": 21
+      },
+      "id": 12,
+      "options": {
+        "displayMode": "basic",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showUnfilled": false
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "instant": true,
+          "expr": "topk(20, opengauss_injection_query_temp_written_blocks{scenario=~\"$scenario\",run=~\"$run\",round=~\"$round\"})",
+          "legendFormat": "{{round}} {{query_name}}"
+        }
+      ],
+      "title": "Injection temp written blocks",
+      "type": "bargauge"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 0,
+        "y": 31
+      },
+      "id": 13,
+      "options": {
+        "displayMode": "basic",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showUnfilled": false
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "instant": true,
+          "expr": "topk(20, opengauss_injection_query_external_sort_nodes{scenario=~\"$scenario\",run=~\"$run\",round=~\"$round\"})",
+          "legendFormat": "{{round}} {{query_name}}"
+        }
+      ],
+      "title": "Injection external sort nodes",
+      "type": "bargauge"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 12,
+        "y": 31
+      },
+      "id": 14,
+      "options": {
+        "displayMode": "basic",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showUnfilled": false
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "instant": true,
+          "expr": "topk(20, opengauss_plan_query_invalid_operator_count{scenario=~\"$scenario\",run=~\"$run\",analysis=~\"$round\"})",
+          "legendFormat": "{{analysis}} {{query_name}}"
+        }
+      ],
+      "title": "Injection query invalid operators",
+      "type": "bargauge"
     }
   ],
-  "refresh": "10s",
+  "refresh": "30s",
   "schemaVersion": 39,
   "style": "dark",
-  "tags": ["opengauss", "pressure"],
-  "templating": {"list": []},
-  "time": {"from": "now-2h", "to": "now"},
+  "tags": [
+    "opengauss",
+    "pressure"
+  ],
+  "templating": {
+    "list": [
+      {
+        "name": "scenario",
+        "label": "Scenario",
+        "type": "query",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
+        },
+        "query": "label_values(opengauss_injection_round_count, scenario)",
+        "definition": "label_values(opengauss_injection_round_count, scenario)",
+        "refresh": 1,
+        "includeAll": true,
+        "multi": true,
+        "allValue": ".*",
+        "current": {
+          "selected": true,
+          "text": "All",
+          "value": "$__all"
+        },
+        "options": [],
+        "sort": 1
+      },
+      {
+        "name": "run",
+        "label": "Run",
+        "type": "query",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
+        },
+        "query": "label_values(opengauss_injection_round_count{scenario=~\"$scenario\"}, run)",
+        "definition": "label_values(opengauss_injection_round_count{scenario=~\"$scenario\"}, run)",
+        "refresh": 1,
+        "includeAll": true,
+        "multi": true,
+        "allValue": ".*",
+        "current": {
+          "selected": true,
+          "text": "All",
+          "value": "$__all"
+        },
+        "options": [],
+        "sort": 1
+      },
+      {
+        "name": "round",
+        "label": "Round",
+        "type": "query",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
+        },
+        "query": "label_values(opengauss_injection_query_execution_time_ms{scenario=~\"$scenario\",run=~\"$run\"}, round)",
+        "definition": "label_values(opengauss_injection_query_execution_time_ms{scenario=~\"$scenario\",run=~\"$run\"}, round)",
+        "refresh": 1,
+        "includeAll": true,
+        "multi": true,
+        "allValue": ".*",
+        "current": {
+          "selected": true,
+          "text": "All",
+          "value": "$__all"
+        },
+        "options": [],
+        "sort": 1
+      }
+    ]
+  },
+  "time": {
+    "from": "now-30d",
+    "to": "now"
+  },
   "timezone": "",
   "title": "Pressure Injection Analysis",
   "uid": "pressure-injection-analysis",
-  "version": 1
+  "version": 3
 }

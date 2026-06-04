@@ -5,8 +5,8 @@
 编辑 [env/compose/.env](../env/compose/.env)：
 ```dotenv
 OPENGAUSS_RUNTIME_MODE=source
-OPENGAUSS_SOURCE_DIR=./openGauss-server
-OPENGAUSS_THIRD_PARTY_DIR=./openGauss-third_party
+OPENGAUSS_SOURCE_DIR=./ThirdParty/openGauss-server
+OPENGAUSS_BINARYLIBS_DIR=./ThirdParty/openGauss-binarylibs
 ```
 
 ### 2. 进入开发容器
@@ -27,6 +27,8 @@ bash scripts/db/build-source.sh
 ```bash
 bash scripts/db/start.sh --mode source --full-observability
 ```
+
+当前 source mode 已验证可自动完成源码编译、数据库健康检查、bootstrap SQL 与 observability 视图安装；如历史 volume 中仍使用 `${OPENGAUSS_DATA_DIR}/data` 布局，启动脚本也会兼容。
 
 ### 5. 跑 benchmark / scenario
 ```bash

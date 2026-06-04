@@ -1,4 +1,4 @@
-# 32GB 以内低内存实验模板
+# 32GB 以内,低内存实验模板
 max_connections = 400
 shared_buffers = 6GB
 work_mem = 16MB

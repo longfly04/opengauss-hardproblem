@@ -5,6 +5,7 @@ services:
       dockerfile: env/opengauss/dev/Dockerfile.runtime
       args:
         OPENGAUSS_DEV_IMAGE: ${OPENGAUSS_DEV_IMAGE}
+        OPENGAUSS_RUNTIME_BASE_IMAGE: ${OPENGAUSS_RUNTIME_BASE_IMAGE}
         OPENGAUSS_BUILD_TYPE: ${OPENGAUSS_BUILD_TYPE}
         OPENGAUSS_INSTALL_PREFIX: ${OPENGAUSS_INSTALL_PREFIX}
     image: ${OPENGAUSS_SOURCE_IMAGE}
@@ -29,6 +30,7 @@ services:
       context: ../..
       dockerfile: env/opengauss/dev/Dockerfile.dev
       args:
+        OPENGAUSS_DEV_BASE_IMAGE: ${OPENGAUSS_DEV_BASE_IMAGE}
         OPENGAUSS_BUILD_TYPE: ${OPENGAUSS_BUILD_TYPE}
         OPENGAUSS_INSTALL_PREFIX: ${OPENGAUSS_INSTALL_PREFIX}
     image: ${OPENGAUSS_DEV_IMAGE}
@@ -49,10 +51,10 @@ services:
       GS_PASSWORD: ${GS_PASSWORD}
       DB_ADMIN_USER: ${DB_ADMIN_USER}
     ports:
-      - "${OPENGAUSS_DEBUG_PORT}:52345"
+      - "${OPENGAUSS_DEV_DEBUG_PORT:-52346}:52345"
     volumes:
       - ${OPENGAUSS_SOURCE_DIR}:/workspace/openGauss-server
-      - ${OPENGAUSS_THIRD_PARTY_DIR}:/workspace/openGauss-third_party
+      - ${OPENGAUSS_BINARYLIBS_DIR}:/workspace/openGauss-third_party
       - opengauss_install_cache:${OPENGAUSS_INSTALL_PREFIX}
       - opengauss_build_cache:/workspace/opengauss-build
       - ../opengauss/init:/opt/opengauss/bootstrap:ro

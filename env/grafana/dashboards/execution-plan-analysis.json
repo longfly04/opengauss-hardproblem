@@ -17,30 +17,35 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
-        "w": 12,
+        "h": 5,
+        "w": 4,
         "x": 0,
         "y": 0
       },
       "id": 1,
       "options": {
-        "legend": {
-          "displayMode": "table",
-          "placement": "bottom"
-        }
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
       },
       "targets": [
         {
-          "expr": "sum(opengauss_execution_plan_queries{query_type=\"explain\"})",
-          "legendFormat": "EXPLAIN queries"
-        },
-        {
-          "expr": "sum(opengauss_execution_plan_queries{query_type=\"normal\"})",
-          "legendFormat": "Normal queries"
+          "expr": "sum(opengauss_plan_analysis_plan_count{run=~\"$run\",scenario=~\"$scenario\",analysis=~\"$analysis\"})",
+          "instant": true,
+          "refId": "A"
         }
       ],
-      "title": "Execution Plan Query Count",
-      "type": "timeseries"
+      "title": "Parsed plans",
+      "type": "stat"
     },
     {
       "datasource": {
@@ -49,35 +54,40 @@
       },
       "fieldConfig": {
         "defaults": {
-          "unit": "s"
+          "unit": "short"
         },
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
+        "h": 5,
+        "w": 4,
+        "x": 4,
         "y": 0
       },
       "id": 2,
       "options": {
-        "legend": {
-          "displayMode": "table",
-          "placement": "bottom"
-        }
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
       },
       "targets": [
         {
-          "expr": "sum(opengauss_execution_plan_avg_duration_seconds)",
-          "legendFormat": "Average query duration"
-        },
-        {
-          "expr": "sum(opengauss_execution_plan_max_duration_seconds)",
-          "legendFormat": "Maximum query duration"
+          "expr": "sum(opengauss_plan_analysis_query_count{run=~\"$run\",scenario=~\"$scenario\",analysis=~\"$analysis\"})",
+          "instant": true,
+          "refId": "A"
         }
       ],
-      "title": "Query Duration (seconds)",
-      "type": "timeseries"
+      "title": "Parsed queries",
+      "type": "stat"
     },
     {
       "datasource": {
@@ -91,26 +101,35 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 8
+        "h": 5,
+        "w": 4,
+        "x": 8,
+        "y": 0
       },
       "id": 3,
       "options": {
-        "legend": {
-          "displayMode": "table",
-          "placement": "bottom"
-        }
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
       },
       "targets": [
         {
-          "expr": "sum(opengauss_execution_plan_explain_count)",
-          "legendFormat": "EXPLAIN query count"
+          "expr": "sum(opengauss_plan_analysis_operator_count{run=~\"$run\",scenario=~\"$scenario\",analysis=~\"$analysis\"})",
+          "instant": true,
+          "refId": "A"
         }
       ],
-      "title": "EXPLAIN Query Count",
-      "type": "timeseries"
+      "title": "Parsed operators",
+      "type": "stat"
     },
     {
       "datasource": {
@@ -124,29 +143,450 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
-        "w": 12,
+        "h": 5,
+        "w": 4,
         "x": 12,
-        "y": 8
+        "y": 0
       },
       "id": 4,
       "options": {
-        "legend": {
-          "displayMode": "table",
-          "placement": "bottom"
-        }
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
       },
       "targets": [
         {
-          "expr": "sum(opengauss_execution_plan_normal_count)",
-          "legendFormat": "Normal query count"
+          "expr": "sum(opengauss_plan_analysis_invalid_rows_total{run=~\"$run\",scenario=~\"$scenario\",analysis=~\"$analysis\"})",
+          "instant": true,
+          "refId": "A"
         }
       ],
-      "title": "Normal Query Count",
-      "type": "timeseries"
+      "title": "Invalid operator rows",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 4,
+        "x": 16,
+        "y": 0
+      },
+      "id": 5,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "expr": "sum(opengauss_plan_query_duration_sanity_ok{run=~\"$run\",scenario=~\"$scenario\",analysis=~\"$analysis\"})",
+          "instant": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Duration-sane queries",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 4,
+        "x": 20,
+        "y": 0
+      },
+      "id": 6,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "expr": "sum(opengauss_plan_query_duration_sanity_ok{run=~\"$run\",scenario=~\"$scenario\",analysis=~\"$analysis\"} == bool 0)",
+          "instant": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Flagged queries",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ms"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 0,
+        "y": 5
+      },
+      "id": 7,
+      "options": {
+        "displayMode": "basic",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showUnfilled": false
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "instant": true,
+          "expr": "topk(10, opengauss_plan_query_execution_time_ms{run=~\"$run\",scenario=~\"$scenario\",analysis=~\"$analysis\"} unless on(run,scenario,analysis,query_name) (opengauss_plan_query_duration_sanity_ok{run=~\"$run\",scenario=~\"$scenario\",analysis=~\"$analysis\"} == 0))",
+          "legendFormat": "{{run}}/{{analysis}} {{query_name}}"
+        }
+      ],
+      "title": "Slowest sane queries",
+      "type": "bargauge"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 12,
+        "y": 5
+      },
+      "id": 8,
+      "options": {
+        "displayMode": "basic",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showUnfilled": false
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "instant": true,
+          "expr": "topk(10, opengauss_plan_query_temp_written_blocks{run=~\"$run\",scenario=~\"$scenario\",analysis=~\"$analysis\"} unless on(run,scenario,analysis,query_name) (opengauss_plan_query_duration_sanity_ok{run=~\"$run\",scenario=~\"$scenario\",analysis=~\"$analysis\"} == 0))",
+          "legendFormat": "{{run}}/{{analysis}} {{query_name}}"
+        }
+      ],
+      "title": "Spill-heavy queries",
+      "type": "bargauge"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 0,
+        "y": 15
+      },
+      "id": 9,
+      "options": {
+        "displayMode": "basic",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showUnfilled": false
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "instant": true,
+          "expr": "topk(10, opengauss_plan_query_external_sort_nodes{run=~\"$run\",scenario=~\"$scenario\",analysis=~\"$analysis\"} unless on(run,scenario,analysis,query_name) (opengauss_plan_query_duration_sanity_ok{run=~\"$run\",scenario=~\"$scenario\",analysis=~\"$analysis\"} == 0))",
+          "legendFormat": "{{run}}/{{analysis}} {{query_name}}"
+        }
+      ],
+      "title": "Queries with external sorts",
+      "type": "bargauge"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 12,
+        "y": 15
+      },
+      "id": 10,
+      "options": {
+        "displayMode": "basic",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showUnfilled": false
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "instant": true,
+          "expr": "topk(10, opengauss_plan_query_invalid_operator_count{run=~\"$run\",scenario=~\"$scenario\",analysis=~\"$analysis\"})",
+          "legendFormat": "{{run}}/{{analysis}} {{query_name}}"
+        }
+      ],
+      "title": "Queries flagged by invalid operators",
+      "type": "bargauge"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ms"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 0,
+        "y": 25
+      },
+      "id": 11,
+      "options": {
+        "displayMode": "basic",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showUnfilled": false
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "instant": true,
+          "expr": "topk(12, sum by (node_type) (opengauss_plan_operator_exclusive_duration_ms_sum{run=~\"$run\",scenario=~\"$scenario\",analysis=~\"$analysis\"}))",
+          "legendFormat": "{{node_type}}"
+        }
+      ],
+      "title": "Operator duration hotspots",
+      "type": "bargauge"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 12,
+        "y": 25
+      },
+      "id": 12,
+      "options": {
+        "displayMode": "basic",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showUnfilled": false
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "instant": true,
+          "expr": "topk(12, sum by (node_type) (opengauss_plan_operator_exclusive_cost_sum{run=~\"$run\",scenario=~\"$scenario\",analysis=~\"$analysis\"}))",
+          "legendFormat": "{{node_type}}"
+        }
+      ],
+      "title": "Operator cost hotspots",
+      "type": "bargauge"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 0,
+        "y": 35
+      },
+      "id": 13,
+      "options": {
+        "displayMode": "basic",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showUnfilled": false
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "instant": true,
+          "expr": "topk(12, max by (node_type) (opengauss_plan_operator_sort_space_used_kb_max{run=~\"$run\",scenario=~\"$scenario\",analysis=~\"$analysis\"} * 1024))",
+          "legendFormat": "{{node_type}}"
+        }
+      ],
+      "title": "Sort memory evidence",
+      "type": "bargauge"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 12,
+        "y": 35
+      },
+      "id": 14,
+      "options": {
+        "displayMode": "basic",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showUnfilled": false
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "instant": true,
+          "expr": "topk(12, sum by (node_type) (opengauss_plan_operator_temp_written_blocks_sum{run=~\"$run\",scenario=~\"$scenario\",analysis=~\"$analysis\"}))",
+          "legendFormat": "{{node_type}}"
+        }
+      ],
+      "title": "Sort/hash spill pressure",
+      "type": "bargauge"
     }
   ],
-  "refresh": "10s",
+  "refresh": "30s",
   "schemaVersion": 39,
   "style": "dark",
   "tags": [
@@ -154,14 +594,81 @@
     "execution-plan"
   ],
   "templating": {
-    "list": []
+    "list": [
+      {
+        "name": "scenario",
+        "label": "Scenario",
+        "type": "query",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
+        },
+        "query": "label_values(opengauss_plan_analysis_query_count, scenario)",
+        "definition": "label_values(opengauss_plan_analysis_query_count, scenario)",
+        "refresh": 1,
+        "includeAll": true,
+        "multi": true,
+        "allValue": ".*",
+        "current": {
+          "selected": true,
+          "text": "All",
+          "value": "$__all"
+        },
+        "options": [],
+        "sort": 1
+      },
+      {
+        "name": "run",
+        "label": "Run",
+        "type": "query",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
+        },
+        "query": "label_values(opengauss_plan_analysis_query_count{scenario=~\"$scenario\"}, run)",
+        "definition": "label_values(opengauss_plan_analysis_query_count{scenario=~\"$scenario\"}, run)",
+        "refresh": 1,
+        "includeAll": true,
+        "multi": true,
+        "allValue": ".*",
+        "current": {
+          "selected": true,
+          "text": "All",
+          "value": "$__all"
+        },
+        "options": [],
+        "sort": 1
+      },
+      {
+        "name": "analysis",
+        "label": "Analysis",
+        "type": "query",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
+        },
+        "query": "label_values(opengauss_plan_analysis_query_count{scenario=~\"$scenario\",run=~\"$run\"}, analysis)",
+        "definition": "label_values(opengauss_plan_analysis_query_count{scenario=~\"$scenario\",run=~\"$run\"}, analysis)",
+        "refresh": 1,
+        "includeAll": true,
+        "multi": true,
+        "allValue": ".*",
+        "current": {
+          "selected": true,
+          "text": "All",
+          "value": "$__all"
+        },
+        "options": [],
+        "sort": 1
+      }
+    ]
   },
   "time": {
-    "from": "now-1h",
+    "from": "now-30d",
     "to": "now"
   },
   "timezone": "",
   "title": "Execution Plan Analysis",
   "uid": "execution-plan-analysis",
-  "version": 1
+  "version": 4
 }

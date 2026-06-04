@@ -1,0 +1,13 @@
+scenario_name: tpch-baseline
+tp_runner: tpch
+enable_injection: false
+load_tpch_data: true
+tpch_scale_factor: 1
+tpch_query_dir: benchmarks/tpch/variants/spill-prone
+tpch_query_file: ""
+tpch_data_policy: reuse_if_present
+tpch_seed_name: sf1-local
+dataset_profile_file: benchmarks/datasets/profiles/small-local.yaml
+hardware_profile_file: experiments/configs/hardware-profiles/8u-8gb.yaml
+sql_preset: sql/tuning/baseline_params.sql
+warmup_seconds: 0

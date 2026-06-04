@@ -1,0 +1,10 @@
+{
+  "analysis_name": "round1-check",
+  "source_input_dir": "/home/sducs/postgresql-dev/exp/opengauss-hardproblem/experiments/runs/20260413-154513-tpcc-plus-tpch-injection/injection/round-1",
+  "generated_at": "2026-04-14T05:52:32.933071+00:00",
+  "run_id": "20260413-154513-tpcc-plus-tpch-injection",
+  "scenario_name": "tpcc-plus-tpch-injection",
+  "plan_count": 3,
+  "operator_count": 19,
+  "query_count": 3
+}

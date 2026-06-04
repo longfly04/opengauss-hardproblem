@@ -1,0 +1,20 @@
+rank	query_name	plan_file	node_id	node_type	exclusive_cost
+1	01_hashjoin_revenue	/home/sducs/postgresql-dev/exp/opengauss-hardproblem/experiments/runs/20260413-154513-tpcc-plus-tpch-injection/injection/round-1/01_hashjoin_revenue.plan	5	Sort	4995246.449999999
+2	02_large_sort	/home/sducs/postgresql-dev/exp/opengauss-hardproblem/experiments/runs/20260413-154513-tpcc-plus-tpch-injection/injection/round-1/02_large_sort.plan	1	Seq Scan	2147891.55
+3	03_seqscan_aggregate	/home/sducs/postgresql-dev/exp/opengauss-hardproblem/experiments/runs/20260413-154513-tpcc-plus-tpch-injection/injection/round-1/03_seqscan_aggregate.plan	4	Seq Scan	2147891.55
+4	03_seqscan_aggregate	/home/sducs/postgresql-dev/exp/opengauss-hardproblem/experiments/runs/20260413-154513-tpcc-plus-tpch-injection/injection/round-1/03_seqscan_aggregate.plan	3	Hash Join	1551828.2900000003
+5	01_hashjoin_revenue	/home/sducs/postgresql-dev/exp/opengauss-hardproblem/experiments/runs/20260413-154513-tpcc-plus-tpch-injection/injection/round-1/01_hashjoin_revenue.plan	6	Seq Scan	1493099.82
+6	01_hashjoin_revenue	/home/sducs/postgresql-dev/exp/opengauss-hardproblem/experiments/runs/20260413-154513-tpcc-plus-tpch-injection/injection/round-1/01_hashjoin_revenue.plan	8	Sort	1237845.15
+7	03_seqscan_aggregate	/home/sducs/postgresql-dev/exp/opengauss-hardproblem/experiments/runs/20260413-154513-tpcc-plus-tpch-injection/injection/round-1/03_seqscan_aggregate.plan	2	HashAggregate	422847.6200000001
+8	01_hashjoin_revenue	/home/sducs/postgresql-dev/exp/opengauss-hardproblem/experiments/runs/20260413-154513-tpcc-plus-tpch-injection/injection/round-1/01_hashjoin_revenue.plan	9	Seq Scan	254719.53
+9	01_hashjoin_revenue	/home/sducs/postgresql-dev/exp/opengauss-hardproblem/experiments/runs/20260413-154513-tpcc-plus-tpch-injection/injection/round-1/01_hashjoin_revenue.plan	4	Merge Join	162561.82000000076
+10	03_seqscan_aggregate	/home/sducs/postgresql-dev/exp/opengauss-hardproblem/experiments/runs/20260413-154513-tpcc-plus-tpch-injection/injection/round-1/03_seqscan_aggregate.plan	6	Seq Scan	61046.89
+11	01_hashjoin_revenue	/home/sducs/postgresql-dev/exp/opengauss-hardproblem/experiments/runs/20260413-154513-tpcc-plus-tpch-injection/injection/round-1/01_hashjoin_revenue.plan	1	Nested Loop	40989.85999999981
+12	01_hashjoin_revenue	/home/sducs/postgresql-dev/exp/opengauss-hardproblem/experiments/runs/20260413-154513-tpcc-plus-tpch-injection/injection/round-1/01_hashjoin_revenue.plan	2	Nested Loop	35415.30999999978
+13	01_hashjoin_revenue	/home/sducs/postgresql-dev/exp/opengauss-hardproblem/experiments/runs/20260413-154513-tpcc-plus-tpch-injection/injection/round-1/01_hashjoin_revenue.plan	7	Materialize	19996.88000000012
+14	01_hashjoin_revenue	/home/sducs/postgresql-dev/exp/opengauss-hardproblem/experiments/runs/20260413-154513-tpcc-plus-tpch-injection/injection/round-1/01_hashjoin_revenue.plan	10	Index Scan	4828.34
+15	03_seqscan_aggregate	/home/sducs/postgresql-dev/exp/opengauss-hardproblem/experiments/runs/20260413-154513-tpcc-plus-tpch-injection/injection/round-1/03_seqscan_aggregate.plan	1	Sort	1075.1000000000931
+16	01_hashjoin_revenue	/home/sducs/postgresql-dev/exp/opengauss-hardproblem/experiments/runs/20260413-154513-tpcc-plus-tpch-injection/injection/round-1/01_hashjoin_revenue.plan	3	Merge Join	303.4500000000371
+17	01_hashjoin_revenue	/home/sducs/postgresql-dev/exp/opengauss-hardproblem/experiments/runs/20260413-154513-tpcc-plus-tpch-injection/injection/round-1/01_hashjoin_revenue.plan	11	Index Scan	8.2
+18	01_hashjoin_revenue	/home/sducs/postgresql-dev/exp/opengauss-hardproblem/experiments/runs/20260413-154513-tpcc-plus-tpch-injection/injection/round-1/01_hashjoin_revenue.plan	12	Index Scan	8.19
+19	03_seqscan_aggregate	/home/sducs/postgresql-dev/exp/opengauss-hardproblem/experiments/runs/20260413-154513-tpcc-plus-tpch-injection/injection/round-1/03_seqscan_aggregate.plan	5	Hash	0.0

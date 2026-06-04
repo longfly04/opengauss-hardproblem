@@ -42,6 +42,11 @@ fi
 
 if [[ "$OPENGAUSS_RUNTIME_MODE" == "source" ]]; then
   "$REPO_ROOT/scripts/db/build-source.sh"
+elif [[ "$OPENGAUSS_RUNTIME_MODE" == "stock" ]]; then
+  if ! docker image inspect "$OPENGAUSS_IMAGE" >/dev/null 2>&1; then
+    log "trusted stock image not found locally; building from source"
+    "$REPO_ROOT/scripts/db/build-source.sh" --emit-stock-image
+  fi
 fi
 
 if [[ "$FULL_OBSERVABILITY" -eq 1 ]]; then

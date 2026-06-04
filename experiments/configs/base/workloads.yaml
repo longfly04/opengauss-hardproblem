@@ -16,3 +16,7 @@ sysbench_report_interval: 1
 tpcc_scalefactor: 10
 tpcc_terminals: 32
 tpch_scale_factor: 1
+tpch_query_dir: benchmarks/tpch/variants/spill-prone
+tpch_query_file: ""
+tpch_data_policy: force_reload
+tpch_seed_name: ""

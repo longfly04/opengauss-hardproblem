@@ -1,0 +1,4 @@
+query_name	root_node_type	plan_execution_time_ms	max_exclusive_duration_ms	max_exclusive_cost	max_sort_space_used_kb	sum_temp_written_blocks	sum_temp_read_blocks	sum_io_read_time_ms	sum_io_write_time_ms	external_sort_node_count	runtime_source	duration_sanity_status	invalid_operator_count	parse_status
+01_hashjoin_revenue	Nested Loop	1256736.523	584418.196	4995246.449999999	2465104.0	0.0	0.0	0.0	0.0	2	plan_footer	ok	0	ok
+02_large_sort	Seq Scan	47410.767	15838.943	2147891.55	0.0	0.0	0.0	0.0	0.0	0	plan_footer	ok	0	ok
+03_seqscan_aggregate	Sort	65522.94	25405.171000000002	2147891.55	4870.0	0.0	0.0	0.0	0.0	0	plan_footer	ok	0	ok

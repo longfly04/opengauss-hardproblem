@@ -1,4 +1,4 @@
-profile_name: 8u-64gb
+profile_name: 8u-8gb
 cpu_cores: 8
-total_memory_gb: 64
+total_memory_gb: 8
 temp_disk_note: dedicated-ssd

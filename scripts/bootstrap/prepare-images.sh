@@ -25,6 +25,8 @@ ensure_env_file
 log "building custom images"
 compose build og-memory-exporter tpcc-runner tpch-tools
 
-if [[ "$INCLUDE_DB_SOURCE" -eq 1 || "$OPENGAUSS_RUNTIME_MODE" == "source" ]]; then
+if [[ "$INCLUDE_DB_SOURCE" -eq 1 ]]; then
+  "$REPO_ROOT/scripts/db/build-source.sh" --emit-stock-image
+elif [[ "$OPENGAUSS_RUNTIME_MODE" == "source" ]]; then
   "$REPO_ROOT/scripts/db/build-source.sh"
 fi

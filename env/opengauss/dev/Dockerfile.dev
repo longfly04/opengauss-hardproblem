@@ -1,51 +1,62 @@
+ARG OPENGAUSS_DEV_BASE_IMAGE=docker.1ms.run/openeuler/openeuler:24.03-lts
 ARG OPENGAUSS_BUILD_TYPE=debug
 ARG OPENGAUSS_INSTALL_PREFIX=/opt/opengauss/install
 
-FROM ubuntu:22.04
+FROM ${OPENGAUSS_DEV_BASE_IMAGE}
 ARG OPENGAUSS_BUILD_TYPE
 ARG OPENGAUSS_INSTALL_PREFIX
-ENV DEBIAN_FRONTEND=noninteractive
+ENV LANG=C.utf8
+ENV LC_ALL=C.utf8
 ENV OPENGAUSS_BUILD_TYPE=${OPENGAUSS_BUILD_TYPE}
 ENV OPENGAUSS_INSTALL_PREFIX=${OPENGAUSS_INSTALL_PREFIX}
 
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
+RUN yum -y update \
+    && yum -y install \
       bash \
-      build-essential \
-      ca-certificates \
-      ccache \
-      cmake \
-      flex \
       bison \
-      g++ \
+      binutils \
+      bzip2 \
+      ca-certificates \
+      dkms \
+      expect \
+      flex \
       gcc \
+      gcc-c++ \
       gdb \
-      gdbserver \
+      gdb-gdbserver \
       git \
-      libaio-dev \
-      libedit-dev \
-      libevent-dev \
-      libffi-dev \
-      libkrb5-dev \
-      liblz4-dev \
-      libncurses5-dev \
-      libnuma-dev \
-      libreadline-dev \
-      libssl-dev \
-      libxml2-dev \
+      glibc-all-langpacks \
+      glibc-common \
+      glibc-devel \
+      java-1.8.0-openjdk-devel \
+      krb5-devel \
+      libaio-devel \
+      libedit-devel \
+      libevent-devel \
+      libffi-devel \
+      libxml2-devel \
+      lz4-devel \
       make \
+      ncurses-devel \
       net-tools \
-      openssh-client \
-      pkg-config \
+      numactl-devel \
+      openblas-devel \
+      openssl-devel \
+      patch \
+      perl \
+      procps-ng \
       python3 \
+      readline-devel \
       rsync \
       sudo \
+      tar \
+      unixODBC-devel \
       wget \
-      zlib1g-dev \
-      linux-tools-common \
-      linux-tools-generic \
-      linux-tools-$(uname -r) \
-    && rm -rf /var/lib/apt/lists/*
+      which \
+      zlib-devel \
+    && yum clean all \
+    && rm -rf /var/cache/yum \
+    && localedef -i en_US -f UTF-8 en_US.UTF-8 || true
 
 RUN groupadd -g 1000 omm \
     && useradd -m -u 1000 -g 1000 -s /bin/bash omm \

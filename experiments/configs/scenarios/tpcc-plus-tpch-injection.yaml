@@ -6,8 +6,8 @@ injection_query_dir: benchmarks/tpch/variants/pressure-injection
 injection_delay_seconds: 120
 injection_window_seconds: 60
 injection_repeat: 1
-dataset_profile_file: benchmarks/datasets/profiles/small-local.yaml
-hardware_profile_file: experiments/configs/hardware-profiles/local-dev.yaml
+dataset_profile_file: benchmarks/datasets/profiles/challenge-lowmem.yaml
+hardware_profile_file: experiments/configs/hardware-profiles/8u-8gb.yaml
 sql_preset: sql/tuning/baseline_params.sql
 duration_seconds: 300
 warmup_seconds: 60

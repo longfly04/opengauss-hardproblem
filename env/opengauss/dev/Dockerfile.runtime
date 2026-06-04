@@ -1,4 +1,5 @@
 ARG OPENGAUSS_DEV_IMAGE=local/opengauss-source-dev:latest
+ARG OPENGAUSS_RUNTIME_BASE_IMAGE=docker.1ms.run/openeuler/openeuler:24.03-lts
 ARG OPENGAUSS_BUILD_TYPE=debug
 ARG OPENGAUSS_INSTALL_PREFIX=/opt/opengauss/install
 
@@ -12,43 +13,61 @@ USER root
 COPY env/opengauss/dev/entrypoint.sh /usr/local/bin/opengauss-entrypoint.sh
 RUN chmod +x /usr/local/bin/opengauss-entrypoint.sh
 
-FROM ubuntu:22.04
+FROM ${OPENGAUSS_RUNTIME_BASE_IMAGE}
 ARG OPENGAUSS_INSTALL_PREFIX
-ENV DEBIAN_FRONTEND=noninteractive
+ENV LANG=C.utf8
+ENV LC_ALL=C.utf8
 ENV OPENGAUSS_INSTALL_PREFIX=${OPENGAUSS_INSTALL_PREFIX}
 ENV PATH=${OPENGAUSS_INSTALL_PREFIX}/bin:${PATH}
 
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
+RUN yum -y update \
+    && yum -y install \
       bash \
-      gosu \
+      ca-certificates \
       gdb \
-      gdbserver \
-      libaio1 \
-      libedit2 \
-      libevent-2.1-7 \
-      libffi8 \
-      libkrb5-3 \
-      liblz4-1 \
-      libncurses5 \
-      libnuma1 \
-      libreadline8 \
-      libssl3 \
+      gdb-gdbserver \
+      glibc-all-langpacks \
+      glibc-common \
+      krb5-libs \
+      libaio \
+      libatomic \
+      libedit \
+      libevent \
+      libffi \
       libxml2 \
-      procps \
+      lz4 \
+      ncurses-libs \
+      net-tools \
+      numactl-libs \
+      openblas \
+      openssl-libs \
+      procps-ng \
+      python3 \
+      readline \
+      shadow-utils \
       sudo \
-      zlib1g \
-    && rm -rf /var/lib/apt/lists/*
+      tar \
+      unixODBC \
+      util-linux \
+      wget \
+      which \
+      zlib \
+    && yum clean all \
+    && rm -rf /var/cache/yum \
+    && localedef -i en_US -f UTF-8 en_US.UTF-8 || true
 
 RUN groupadd -g 1000 omm \
     && useradd -m -u 1000 -g 1000 -s /bin/bash omm \
-    && mkdir -p /var/lib/opengauss /var/log/opengauss /opt/opengauss/install \
+    && mkdir -p /var/lib/opengauss /var/log/opengauss "${OPENGAUSS_INSTALL_PREFIX}" \
     && chown -R omm:omm /var/lib/opengauss /var/log/opengauss /opt/opengauss
 
 RUN for bin in gaussdb gs_ctl gs_initdb gsql; do \
       printf '#!/usr/bin/env bash\nexport LD_LIBRARY_PATH="%s/lib:${LD_LIBRARY_PATH:-}"\nexec "%s/bin/%s" "$@"\n' "$OPENGAUSS_INSTALL_PREFIX" "$OPENGAUSS_INSTALL_PREFIX" "$bin" > "/usr/local/bin/$bin"; \
       chmod +x "/usr/local/bin/$bin"; \
     done
+
+COPY env/opengauss/build-context/install/ ${OPENGAUSS_INSTALL_PREFIX}/
+RUN if [ -d "${OPENGAUSS_INSTALL_PREFIX}" ]; then chown -R omm:omm "${OPENGAUSS_INSTALL_PREFIX}"; fi
 
 COPY --from=devbase /usr/local/bin/opengauss-entrypoint.sh /usr/local/bin/opengauss-entrypoint.sh
 COPY --from=devbase /usr/local/bin/dev-run.sh /usr/local/bin/dev-run.sh

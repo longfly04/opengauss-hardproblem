@@ -2,8 +2,8 @@ scenario_name: tpcc-steady
 tp_runner: sysbench
 enable_injection: false
 load_tpch_data: false
-dataset_profile_file: benchmarks/datasets/profiles/small-local.yaml
-hardware_profile_file: experiments/configs/hardware-profiles/local-dev.yaml
+dataset_profile_file: benchmarks/datasets/profiles/challenge-lowmem.yaml
+hardware_profile_file: experiments/configs/hardware-profiles/8u-8gb.yaml
 sql_preset: sql/tuning/baseline_params.sql
 duration_seconds: 300
 warmup_seconds: 60

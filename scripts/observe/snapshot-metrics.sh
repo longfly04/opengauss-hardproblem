@@ -34,8 +34,15 @@ queries=(
   "sum(opengauss_shared_context_total_bytes)"
   "sum(opengauss_session_used_bytes)"
   "max(opengauss_session_used_bytes)"
+  "max(opengauss_session_memory_used_ratio)"
+  "max(opengauss_session_query_elapsed_seconds)"
   "sum(opengauss_temp_bytes_total)"
   "sum(opengauss_activity_sessions{state=~\"active|fastpath function call\"})"
+  "max(opengauss_setting_bytes{setting=\"work_mem\"})"
+  "max(opengauss_setting_bytes{setting=\"query_mem\"})"
+  "max(opengauss_setting_bytes{setting=\"query_max_mem\"})"
+  "max(opengauss_setting_bytes{setting=\"max_process_memory\"})"
+  "max(opengauss_setting_flag{setting=~\"memorypool_enable|enable_memory_limit\"})"
 )
 
 index=1

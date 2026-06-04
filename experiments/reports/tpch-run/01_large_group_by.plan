@@ -1,0 +1,18 @@
+                                                                                  QUERY PLAN                                                                                  
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Sort  (cost=472660.91..472660.93 rows=5 width=68) (actual time=9121.733..9121.734 rows=5 loops=1)
+   Sort Key: (sum((l.l_extendedprice * (1::numeric - l.l_discount)))) DESC, (count(*)) DESC
+   Sort Method: quicksort  Memory: 25kB
+   ->  HashAggregate  (cost=472660.80..472660.85 rows=5 width=68) (actual time=9121.700..9121.701 rows=5 loops=1)
+         Group By Key: o.o_orderpriority
+         ->  Hash Join  (cost=83349.00..438351.10 rows=2744776 width=28) (actual time=625.073..7208.593 rows=2739845 loops=1)
+               Hash Cond: (l.l_orderkey = o.o_orderkey)
+               ->  Seq Scan on lineitem l  (cost=0.00..214874.43 rows=2744776 width=20) (actual time=0.013..5420.244 rows=2739845 loops=1)
+                     Filter: ((l_shipdate >= '1995-01-01 00:00:00'::timestamp(0) without time zone) AND (l_shipdate < '1998-01-01 00:00:00'::timestamp(0) without time zone))
+                     Rows Removed by Filter: 3261370
+               ->  Hash  (cost=42626.00..42626.00 rows=1500000 width=24) (actual time=620.817..620.817 rows=1500000 loops=1)
+                      Buckets: 1048576  Batches: 2  Memory Usage: 49289kB
+                     ->  Seq Scan on orders o  (cost=0.00..42626.00 rows=1500000 width=24) (actual time=0.005..310.429 rows=1500000 loops=1)
+ Total runtime: 9122.012 ms
+(14 rows)
+

@@ -15,7 +15,7 @@ services:
       OPENGAUSS_LOG_DIR: ${OPENGAUSS_LOG_DIR}
       OPENGAUSS_NODE_NAME: ${OPENGAUSS_NODE_NAME}
       DB_CONTAINER_USER: ${DB_CONTAINER_USER}
-      LD_LIBRARY_PATH: /usr/local/opengauss/lib
+      LD_LIBRARY_PATH: ${OPENGAUSS_INSTALL_PREFIX}/lib
     ports:
       - "${DB_PORT}:5432"
     volumes:
@@ -45,8 +45,11 @@ services:
       DB_USER: ${EXPORTER_USER}
       DB_PASSWORD: ${EXPORTER_PASSWORD}
       EXPORTER_PORT: 9188
+      RUNS_DIR: /workspace/experiments/runs
     ports:
       - "${OG_MEMORY_EXPORTER_PORT}:9188"
+    volumes:
+      - ../../experiments:/workspace/experiments:ro
     depends_on:
       opengauss:
         condition: service_healthy
@@ -80,7 +83,7 @@ services:
       - "${GRAFANA_PORT}:3000"
     environment:
       GF_SECURITY_ADMIN_USER: admin
-      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin@123
       GF_USERS_DEFAULT_THEME: light
       GF_USERS_DEFAULT_LANGUAGE: zh-CN
     volumes:

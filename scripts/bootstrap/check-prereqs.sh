@@ -38,10 +38,22 @@ printf 'docker-first mode: enabled\n'
 printf 'runtime mode: %s\n' "${OPENGAUSS_RUNTIME_MODE:-stock}"
 printf 'db service: %s\n' "${DB_SERVICE_NAME:-opengauss}"
 printf 'db endpoint: %s:%s\n' "${DB_HOST:-opengauss}" "${DB_PORT:-5432}"
+printf 'source build baseline: %s\n' "$OPENGAUSS_SOURCE_BUILD_BASELINE"
 
-if [[ "${OPENGAUSS_RUNTIME_MODE:-stock}" == "source" ]]; then
-  printf 'source dir: %s\n' "${OPENGAUSS_SOURCE_DIR:-./openGauss-server}"
-  printf 'third_party dir: %s\n' "${OPENGAUSS_THIRD_PARTY_DIR:-./openGauss-third_party}"
+if [[ -n "${OPENGAUSS_SOURCE_DIR:-}" || -n "${OPENGAUSS_BINARYLIBS_DIR:-}" || -n "${OPENGAUSS_THIRD_PARTY_DIR:-}" || "${OPENGAUSS_RUNTIME_MODE:-stock}" == "source" ]]; then
+  source_dir="$(get_opengauss_source_dir)"
+  binarylibs_dir="$(get_opengauss_binarylibs_dir)"
+  printf 'source dir: %s\n' "$source_dir"
+  printf 'binarylibs dir: %s\n' "$binarylibs_dir"
+  printf 'binarylibs root expectations: %s\n' 'buildtools/, kernel/platform/, kernel/dependency/'
+
+  if ! validate_opengauss_source_root "$source_dir"; then
+    missing=1
+  fi
+
+  if ! validate_opengauss_binarylibs_root "$binarylibs_dir"; then
+    missing=1
+  fi
 fi
 
 exit "$missing"

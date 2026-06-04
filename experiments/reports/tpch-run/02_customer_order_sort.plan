@@ -1,0 +1,25 @@
+                                                                                            QUERY PLAN                                                                                            
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=1186824.76..1186837.26 rows=5000 width=71) (actual time=5267.400..5268.029 rows=5000 loops=1)
+   ->  Sort  (cost=1186824.76..1204180.84 rows=6942431 width=71) (actual time=5267.398..5267.703 rows=5000 loops=1)
+         Sort Key: (sum((l.l_extendedprice * (1::numeric - l.l_discount)))) DESC, c.c_name
+         Sort Method: top-N heapsort  Memory: 1178kB
+         ->  HashAggregate  (cost=560603.32..725579.63 rows=6942431 width=71) (actual time=3792.463..5128.556 rows=454940 loops=1)
+               Group By Key: c.c_name, o.o_orderdate
+ Temp File Num: 128
+               ->  Hash Join  (cost=68858.72..345655.93 rows=6942431 width=39) (actual time=626.830..2529.697 rows=1825510 loops=1)
+                     Hash Cond: (l.l_orderkey = o.o_orderkey)
+                     ->  Seq Scan on lineitem l  (cost=0.00..184868.29 rows=6001229 width=20) (actual time=0.008..745.401 rows=6001215 loops=1)
+                     ->  Hash  (cost=63256.00..63256.00 rows=448218 width=35) (actual time=623.893..623.893 rows=456409 loops=1)
+                            Buckets: 524288  Batches: 1  Memory Usage: 36188kB
+                           ->  Hash Join  (cost=6967.00..63256.00 rows=448218 width=35) (actual time=75.638..508.988 rows=456409 loops=1)
+                                 Hash Cond: (o.o_custkey = c.c_custkey)
+                                 ->  Seq Scan on orders o  (cost=0.00..50126.00 rows=448218 width=20) (actual time=0.012..270.370 rows=456409 loops=1)
+                                       Filter: ((o_orderdate >= '1996-01-01 00:00:00'::timestamp(0) without time zone) AND (o_orderdate < '1998-01-01 00:00:00'::timestamp(0) without time zone))
+                                       Rows Removed by Filter: 1043591
+                                 ->  Hash  (cost=5092.00..5092.00 rows=150000 width=23) (actual time=74.634..74.634 rows=150000 loops=1)
+                                        Buckets: 262144  Batches: 1  Memory Usage: 10252kB
+                                       ->  Seq Scan on customer c  (cost=0.00..5092.00 rows=150000 width=23) (actual time=0.010..46.014 rows=150000 loops=1)
+ Total runtime: 5268.682 ms
+(21 rows)
+
